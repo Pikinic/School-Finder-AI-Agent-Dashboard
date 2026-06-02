@@ -1,8 +1,8 @@
-import React from 'react'
+import AppRoutes from './routes/index.js'
 
 const App = () => {
   return (
-    <div className='text-xl flex center h-full w-full fixed top-0 bg-red text-white'>Pikinic</div>
+   <AppRoutes/>
   )
 }
 
