@@ -664,3 +664,385 @@ Settings
 - Keep the frontend ready to connect to the separate backend repository.
 - The frontend repository may be uploaded separately to GitHub.
 
+# DESIGN CONTEXT
+# Design System & UI Direction
+
+## Product Design Philosophy
+
+School Finder AI is an internal operations platform used by education advisors, relocation consultants, and administrative staff to manage students, schools, recommendations, and application workflows.
+
+The interface should prioritize:
+
+* Clarity over decoration
+* Speed of navigation
+* Information density without clutter
+* Efficient operational workflows
+* Readability and consistency
+* Fast decision making
+
+The product should feel like software users spend hours inside every day, not a marketing website.
+
+Whenever there is a design decision between aesthetics and usability, prioritize usability.
+
+---
+
+## Brand Personality
+
+School Finder AI should feel:
+
+* Professional
+* Trustworthy
+* Organized
+* Global
+* Educational
+* Data-driven
+* Reliable
+
+The interface should inspire confidence in both the data and the workflow.
+
+The product should visually resemble a premium CRM, admissions management platform, or operational dashboard rather than a startup landing page.
+
+---
+
+## Visual Style
+
+The visual language should resemble modern SaaS platforms such as:
+
+* Linear
+* Stripe Dashboard
+* Mercury
+* Ramp
+* Brex
+* Notion
+* Attio
+
+Design characteristics:
+
+* Clean and minimal
+* Modern enterprise aesthetics
+* Soft neutral backgrounds
+* White content surfaces
+* Large rounded corners
+* Subtle shadows
+* Consistent spacing
+* Strong visual hierarchy
+* Minimal decorative elements
+
+Avoid:
+
+* Hero sections
+* Marketing-style layouts
+* Heavy gradients
+* Decorative blobs
+* Excessive animations
+* Overly playful interfaces
+
+---
+
+## Brand Colors
+
+### Primary Brand Color
+
+#045A58
+
+This is the primary visual identity color and should be used consistently throughout the application.
+
+Use for:
+
+* Primary buttons
+* Active navigation states
+* Selected tabs
+* Focus states
+* Charts and analytics
+* KPI highlights
+* Progress indicators
+* Links
+* Important actions
+
+### Hover State
+
+#034A48
+
+### Light Brand Background
+
+#E6F4F3
+
+Use for:
+
+* Active sidebar backgrounds
+* Selected rows
+* Informational badges
+* Highlighted states
+
+### Background
+
+#F5F6F8
+
+### Surface
+
+#FFFFFF
+
+### Border
+
+#E5E7EB
+
+### Primary Text
+
+#111827
+
+### Secondary Text
+
+#6B7280
+
+### Success
+
+#16A34A
+
+### Warning
+
+#F59E0B
+
+### Error
+
+#DC2626
+
+---
+
+## Layout Principles
+
+The application uses a dashboard shell layout.
+
+Structure:
+
+Sidebar → Topbar → Content Area
+
+Desktop-first design.
+
+The layout should maximize productivity and information visibility.
+
+---
+
+## Sidebar
+
+The sidebar is the primary navigation system.
+
+Characteristics:
+
+* White background
+* Fixed position on desktop
+* Rounded navigation items
+* Icon and label navigation
+* Active state uses the brand color (#045A58)
+* Clean spacing and visual grouping
+
+Navigation should feel similar to the reference dashboard image.
+
+---
+
+## Topbar
+
+Contains:
+
+* Search
+* Notifications
+* User profile
+* Quick actions
+
+Characteristics:
+
+* White background
+* Bottom border
+* Clean and compact
+* Fixed height
+* Minimal distractions
+
+---
+
+## Cards
+
+Cards are the primary content container throughout the platform.
+
+Card Style:
+
+* White background
+* Light border
+* Soft shadow
+* Rounded corners
+* Clear content hierarchy
+
+Cards should be used for:
+
+* Metrics
+* Analytics
+* Student information
+* Recommendations
+* Forms
+* Tables
+* Workflow summaries
+
+---
+
+## Border Radius
+
+Use a consistent radius system:
+
+Small: 12px
+
+Medium: 16px
+
+Large: 20px
+
+Extra Large: 24px
+
+Avoid sharp corners.
+
+---
+
+## Typography
+
+Font Family:
+
+Inter
+
+Weights:
+
+* 400
+* 500
+* 600
+* 700
+
+Scale:
+
+* Page Titles: 32px
+* Section Titles: 24px
+* Card Titles: 18px
+* Body Text: 14px–16px
+* Caption Text: 12px
+
+Typography should feel calm, professional, and highly readable.
+
+Avoid oversized marketing typography.
+
+---
+
+## Tables
+
+Tables are a core part of the product.
+
+Requirements:
+
+* Search
+* Filters
+* Sorting
+* Pagination
+* Hover states
+* Sticky headers when appropriate
+
+Tables should prioritize operational efficiency and data visibility.
+
+---
+
+## Forms
+
+Forms should be simple, predictable, and consistent.
+
+Input characteristics:
+
+* Comfortable height
+* Clear labels
+* Visible focus states
+* Inline validation messages
+
+Forms should feel fast and efficient for daily operational use.
+
+---
+
+## Status Badges
+
+Status badges should be used extensively across students, applications, schools, recommendations, and workflows.
+
+Examples:
+
+* New
+* Pending
+* Assigned
+* Completed
+* Rejected
+* Follow-up Required
+
+Badges should be visually distinct while maintaining consistency with the overall design system.
+
+---
+
+## Dashboard Design
+
+The dashboard should resemble a premium analytics and operations dashboard.
+
+Use:
+
+* KPI cards
+* Analytics widgets
+* Activity feeds
+* Progress indicators
+* Status summaries
+* Workload overviews
+
+The dashboard should be highly scannable.
+
+Every widget should provide operational value.
+
+Avoid decorative content that does not support decision making.
+
+---
+
+## Student Detail Experience
+
+Student pages should feel similar to a CRM.
+
+Display:
+
+* Student profile
+* Academic information
+* Preferences
+* Recommendations
+* Conversation summaries
+* Advisor notes
+* Application progress
+* Activity timeline
+
+Users should understand a student's status within seconds.
+
+---
+
+## Spacing System
+
+Use an 8px spacing scale.
+
+Examples:
+
+* 8px
+* 16px
+* 24px
+* 32px
+* 40px
+* 48px
+
+Maintain generous whitespace while preserving information density.
+
+---
+
+## Dashboard Inspiration
+
+Use the attached dashboard reference image as inspiration for:
+
+* Sidebar structure
+* Widget layout
+* Card styling
+* Border radius
+* Shadows
+* Information hierarchy
+* Overall spacing
+
+However, all generated interfaces must use the School Finder AI brand color (#045A58) as the primary accent color.
+
+The final result should feel like a premium education operations platform built specifically for managing student placement, school recommendations, and relocation workflows.

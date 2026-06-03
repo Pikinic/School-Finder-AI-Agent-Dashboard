@@ -1,11 +1,13 @@
-import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import LoginPage from '../pages/auth/LoginPage.js'
+import DashboardPage from '../pages/dashboard/DashboardPage.js'
+import ProtectedRoute from './ProtectedRoute.js'
 
 const AppRoutes = () => {
   return (
     <Routes>
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
     </Routes>
   )
 }
