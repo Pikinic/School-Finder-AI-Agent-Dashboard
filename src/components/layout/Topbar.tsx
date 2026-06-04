@@ -1,6 +1,5 @@
 import { Bell, ChevronDown, LogOut, Menu, Plus, Search, Settings, UserRound } from 'lucide-react'
 import { useState } from 'react'
-import Button from '../ui/Button.js'
 import Input from '../ui/Input.js'
 import { cn } from '../../utils/cn.js'
 
@@ -40,9 +39,14 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
         </div>
 
         <div className="flex shrink-0 items-center gap-3">
-          <Button className="hidden sm:inline-flex" leftIcon={<Plus size={17} />} size="md">
-            Add student
-          </Button>
+          <button
+            aria-label="Add student"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-transparent bg-[#045A58] text-white outline-none transition hover:bg-[#034A48] focus:ring-4 focus:ring-[#E6F4F3] xl:w-auto xl:gap-2 xl:px-4"
+            type="button"
+          >
+            <Plus size={24} strokeWidth={2.8} />
+            <span className="hidden xl:inline">Add student</span>
+          </button>
 
           <button
             aria-label="View notifications"
@@ -53,23 +57,24 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
             <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-[#DC2626]" />
           </button>
 
-          <div className="relative hidden md:block">
+          <div className="relative">
             <button
               aria-expanded={isProfileMenuOpen}
+              aria-label="Open profile menu"
               aria-haspopup="menu"
-              className="flex h-11 items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-2.5 pr-3 outline-none transition hover:border-[#D1D5DB] hover:bg-[#F9FAFB] focus:ring-4 focus:ring-[#E6F4F3]"
+              className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E7EB] bg-white outline-none transition hover:border-[#D1D5DB] hover:bg-[#F9FAFB] focus:ring-4 focus:ring-[#E6F4F3] md:h-11 md:w-auto md:gap-3 md:px-2.5 md:pr-3"
               onClick={() => setIsProfileMenuOpen((isOpen) => !isOpen)}
               type="button"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#E6F4F3] text-sm font-semibold text-[#045A58]">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#E6F4F3] text-xs font-semibold text-[#045A58] md:h-8 md:w-8 md:rounded-xl md:text-sm">
                 {currentUser.initials}
               </span>
-              <span className="text-left">
+              <span className="hidden text-left md:block">
                 <span className="block text-sm font-semibold text-[#111827]">{currentUser.name}</span>
                 <span className="block text-xs font-medium text-[#6B7280]">{currentUser.role}</span>
               </span>
               <ChevronDown
-                className={cn('text-[#6B7280] transition-transform', isProfileMenuOpen && 'rotate-180')}
+                className={cn('hidden text-[#6B7280] transition-transform md:block', isProfileMenuOpen && 'rotate-180')}
                 size={16}
               />
             </button>

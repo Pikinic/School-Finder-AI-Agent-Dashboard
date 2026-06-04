@@ -44,6 +44,7 @@ Implemented so far:
   - The topbar includes global search, an Add student quick action, notification button, staff profile control, and a mobile menu trigger.
   - The staff profile control is a profile/account menu, not a role selector.
   - The current profile menu uses mock authenticated-user data (`Amina Yusuf`, `Admin`) and includes View profile, Account settings, and Sign out menu actions.
+  - On mobile, the profile menu remains visible as a compact initials button; on desktop it shows the full user name, role, initials, and chevron.
   - User name, role, initials, and sign-out behavior should later come from the real authentication state/API.
   - The topbar uses a white background, bottom border, compact height, and restrained dashboard styling.
 - `DashboardPage` now renders inside `AppShell` as a fuller operations dashboard using API-shaped mock data:
