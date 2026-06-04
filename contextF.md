@@ -42,8 +42,20 @@ Implemented so far:
   - Mobile sidebar navigation is implemented as an off-canvas drawer with a backdrop, close button, and automatic close on navigation item selection.
   - `src/components/layout/Topbar.tsx` provides the dashboard topbar.
   - The topbar includes global search, an Add student quick action, notification button, staff profile control, and a mobile menu trigger.
+  - The staff profile control is a profile/account menu, not a role selector.
+  - The current profile menu uses mock authenticated-user data (`Amina Yusuf`, `Admin`) and includes View profile, Account settings, and Sign out menu actions.
+  - User name, role, initials, and sign-out behavior should later come from the real authentication state/API.
   - The topbar uses a white background, bottom border, compact height, and restrained dashboard styling.
-- `DashboardPage` now renders inside `AppShell` and shows an initial operational overview with KPI cards using the reusable `Card` and `Badge` components.
+- `DashboardPage` now renders inside `AppShell` as a fuller operations dashboard using API-shaped mock data:
+  - KPI cards for total student leads, new leads today, awaiting assignment, and active conversations.
+  - Lead pipeline summary by status.
+  - Assignment queue progress.
+  - Top destination countries.
+  - Advisor workload summary.
+  - Pending follow-ups.
+  - Recently recommended schools table.
+  - Dashboard actions for report export and lead review.
+- Dashboard UI uses the reusable `Card`, `Badge`, and `Button` components and follows the internal operations design direction.
 - The current sign-in submit flow is development-only:
   - prevents default form submission
   - writes `development-token` to `localStorage` as `token`
@@ -51,7 +63,7 @@ Implemented so far:
 
 Verification status:
 
-- `npx tsc --noEmit` passes after the reusable UI layer, dashboard shell, sidebar, topbar, and mobile navigation changes.
+- `npx tsc --noEmit` passes after the reusable UI layer, dashboard shell, sidebar, topbar, mobile navigation, profile menu, and dashboard page changes.
 - `npm run build` passes and produces the Vite production build in `dist`.
 - `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
@@ -59,7 +71,7 @@ Known next steps:
 
 - Replace the development-only login behavior with a real auth API call.
 - Add authenticated user state and logout handling.
-- Continue expanding dashboard widgets with API-shaped mock data.
+- Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
