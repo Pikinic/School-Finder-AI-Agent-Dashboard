@@ -1,5 +1,6 @@
 import {
   BookOpen,
+  X,
   GraduationCap,
   LayoutDashboard,
   MessageSquareText,
@@ -22,6 +23,11 @@ type NavItem = {
 type NavSection = {
   items: NavItem[]
   label: string
+}
+
+type SidebarProps = {
+  isMobileOpen: boolean
+  onMobileClose: () => void
 }
 
 const navSections: NavSection[] = [
@@ -48,10 +54,10 @@ const navSections: NavSection[] = [
   },
 ]
 
-const Sidebar = () => {
+const SidebarHeader = ({ onClose }: { onClose?: () => void }) => {
   return (
-    <aside className="hidden min-h-screen w-72 shrink-0 border-r border-[#E5E7EB] bg-white px-4 py-5 lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:flex-col">
-      <div className="mb-8 flex items-center gap-3 px-2">
+    <div className="mb-8 flex items-center justify-between gap-3 px-2">
+      <div className="flex items-center gap-3">
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#E6F4F3] text-[#045A58]">
           <GraduationCap size={23} />
         </div>
@@ -61,6 +67,23 @@ const Sidebar = () => {
         </div>
       </div>
 
+      {onClose ? (
+        <button
+          aria-label="Close navigation"
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E5E7EB] bg-white text-[#6B7280] outline-none transition hover:border-[#D1D5DB] hover:bg-[#F9FAFB] hover:text-[#111827] focus:ring-4 focus:ring-[#E6F4F3] lg:hidden"
+          onClick={onClose}
+          type="button"
+        >
+          <X size={18} />
+        </button>
+      ) : null}
+    </div>
+  )
+}
+
+const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
+  return (
+    <>
       <nav className="flex-1 space-y-7 overflow-y-auto pb-5">
         {navSections.map((section) => (
           <div key={section.label}>
@@ -83,6 +106,7 @@ const Sidebar = () => {
                     }
                     end={item.path === '/'}
                     key={item.path}
+                    onClick={onNavigate}
                     to={item.path}
                   >
                     <Icon size={18} strokeWidth={2.1} />
@@ -101,7 +125,38 @@ const Sidebar = () => {
           Manage students, schools, recommendations, and advisor workflows.
         </p>
       </div>
-    </aside>
+    </>
+  )
+}
+
+const Sidebar = ({ isMobileOpen, onMobileClose }: SidebarProps) => {
+  return (
+    <>
+      <aside className="hidden min-h-screen w-72 shrink-0 border-r border-[#E5E7EB] bg-white px-4 py-5 lg:fixed lg:inset-y-0 lg:left-0 lg:flex lg:flex-col">
+        <SidebarHeader />
+        <SidebarContent />
+      </aside>
+
+      <div
+        aria-hidden={!isMobileOpen}
+        className={cn(
+          'fixed inset-0 z-40 bg-[#111827]/35 transition-opacity lg:hidden',
+          isMobileOpen ? 'opacity-100' : 'pointer-events-none opacity-0',
+        )}
+        onClick={onMobileClose}
+      />
+
+      <aside
+        aria-label="Mobile navigation"
+        className={cn(
+          'fixed inset-y-0 left-0 z-50 flex w-[min(20rem,calc(100vw-2rem))] flex-col border-r border-[#E5E7EB] bg-white px-4 py-5 shadow-[20px_0_50px_rgba(17,24,39,0.16)] transition-transform duration-200 lg:hidden',
+          isMobileOpen ? 'translate-x-0' : '-translate-x-full',
+        )}
+      >
+        <SidebarHeader onClose={onMobileClose} />
+        <SidebarContent onNavigate={onMobileClose} />
+      </aside>
+    </>
   )
 }
 
