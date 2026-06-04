@@ -34,18 +34,31 @@ Implemented so far:
   - `Badge`
 - Shared class name composition lives in `src/utils/cn.ts`.
 - `LoginPage` now uses the reusable `Button`, `Input`, and `Card` components.
+- The dashboard shell has been started:
+  - `src/components/layout/AppShell.tsx` provides the protected dashboard layout wrapper.
+  - `src/components/layout/Sidebar.tsx` provides the desktop sidebar navigation.
+  - The sidebar uses the School Finder AI brand color, white surface, light border, rounded active states, lucide-react icons, and navigation groups for Overview, Operations, and Admin.
+  - Sidebar navigation includes Dashboard, Students, Schools, Programs, Conversations, Recommendations, Advisors, and Settings.
+- `DashboardPage` now renders inside `AppShell` and shows an initial operational overview with KPI cards using the reusable `Card` and `Badge` components.
 - The current sign-in submit flow is development-only:
   - prevents default form submission
   - writes `development-token` to `localStorage` as `token`
   - navigates to `/`
-- `DashboardPage` currently exists as a placeholder component.
+
+Verification status:
+
+- `npx tsc --noEmit` passes after the reusable UI layer and dashboard shell changes.
+- `npm run build` passes and produces the Vite production build in `dist`.
+- `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
 Known next steps:
 
 - Replace the development-only login behavior with a real auth API call.
 - Add authenticated user state and logout handling.
-- Expand the protected dashboard into the actual app shell with sidebar, topbar, and dashboard widgets.
+- Add the dashboard topbar with search, notifications, user profile, and quick actions.
+- Continue expanding dashboard widgets with API-shaped mock data.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
+- Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
 
 ## Frontend Purpose
