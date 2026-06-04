@@ -8,6 +8,46 @@ The frontend is used by company staff, advisors, and admins to manage schools, p
 
 The Telegram bot is the student-facing interface. This frontend is the company-facing operations interface.
 
+## Current Implementation Status
+
+The project has been scaffolded as a Vite + React + TypeScript frontend with React Router configured.
+
+Implemented so far:
+
+- App-level routing is centralized in `src/routes/index.tsx`.
+- `src/App.tsx` renders the route tree through `AppRoutes`.
+- `/login` renders `src/pages/auth/LoginPage.tsx`.
+- `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
+- `ProtectedRoute` checks `localStorage.getItem('token')`.
+- If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
+- The sign-in page has been built with the School Finder AI visual direction:
+  - neutral background
+  - white bordered sign-in panel
+  - brand color `#045A58`
+  - email and password inputs
+  - lucide-react icons
+  - submit button with brand styling
+- A small reusable UI layer has been started in `src/components/ui`:
+  - `Button`
+  - `Input`
+  - `Card`
+  - `Badge`
+- Shared class name composition lives in `src/utils/cn.ts`.
+- `LoginPage` now uses the reusable `Button`, `Input`, and `Card` components.
+- The current sign-in submit flow is development-only:
+  - prevents default form submission
+  - writes `development-token` to `localStorage` as `token`
+  - navigates to `/`
+- `DashboardPage` currently exists as a placeholder component.
+
+Known next steps:
+
+- Replace the development-only login behavior with a real auth API call.
+- Add authenticated user state and logout handling.
+- Expand the protected dashboard into the actual app shell with sidebar, topbar, and dashboard widgets.
+- Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
+- Add loading and error states around authentication once the backend is connected.
+
 ## Frontend Purpose
 
 The frontend should help the company:
