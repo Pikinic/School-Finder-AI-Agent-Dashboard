@@ -34,18 +34,47 @@ Implemented so far:
   - `Badge`
 - Shared class name composition lives in `src/utils/cn.ts`.
 - `LoginPage` now uses the reusable `Button`, `Input`, and `Card` components.
+- The dashboard shell has been started:
+  - `src/components/layout/AppShell.tsx` provides the protected dashboard layout wrapper.
+  - `src/components/layout/Sidebar.tsx` provides the desktop sidebar navigation.
+  - The sidebar uses the School Finder AI brand color, white surface, light border, rounded active states, lucide-react icons, and navigation groups for Overview, Operations, and Admin.
+  - Sidebar navigation includes Dashboard, Students, Schools, Programs, Conversations, Recommendations, Advisors, and Settings.
+  - Mobile sidebar navigation is implemented as an off-canvas drawer with a backdrop, close button, and automatic close on navigation item selection.
+  - `src/components/layout/Topbar.tsx` provides the dashboard topbar.
+  - The topbar includes global search, an Add student quick action, notification button, staff profile control, and a mobile menu trigger.
+  - The staff profile control is a profile/account menu, not a role selector.
+  - The current profile menu uses mock authenticated-user data (`Amina Yusuf`, `Admin`) and includes View profile, Account settings, and Sign out menu actions.
+  - On mobile, the profile menu remains visible as a compact initials button; on desktop it shows the full user name, role, initials, and chevron.
+  - User name, role, initials, and sign-out behavior should later come from the real authentication state/API.
+  - The topbar uses a white background, bottom border, compact height, and restrained dashboard styling.
+- `DashboardPage` now renders inside `AppShell` as a fuller operations dashboard using API-shaped mock data:
+  - KPI cards for total student leads, new leads today, awaiting assignment, and active conversations.
+  - Lead pipeline summary by status.
+  - Assignment queue progress.
+  - Top destination countries.
+  - Advisor workload summary.
+  - Pending follow-ups.
+  - Recently recommended schools table.
+  - Dashboard actions for report export and lead review.
+- Dashboard UI uses the reusable `Card`, `Badge`, and `Button` components and follows the internal operations design direction.
 - The current sign-in submit flow is development-only:
   - prevents default form submission
   - writes `development-token` to `localStorage` as `token`
   - navigates to `/`
-- `DashboardPage` currently exists as a placeholder component.
+
+Verification status:
+
+- `npx tsc --noEmit` passes after the reusable UI layer, dashboard shell, sidebar, topbar, mobile navigation, profile menu, and dashboard page changes.
+- `npm run build` passes and produces the Vite production build in `dist`.
+- `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
 Known next steps:
 
 - Replace the development-only login behavior with a real auth API call.
 - Add authenticated user state and logout handling.
-- Expand the protected dashboard into the actual app shell with sidebar, topbar, and dashboard widgets.
+- Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
+- Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
 
 ## Frontend Purpose

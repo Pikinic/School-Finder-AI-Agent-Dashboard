@@ -20,7 +20,7 @@ const Badge = ({ children, className, tone = 'neutral', ...props }: BadgeProps) 
   return (
     <span
       className={cn(
-        'inline-flex h-7 items-center rounded-full px-3 text-xs font-semibold',
+        'inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-xs font-semibold',
         toneClasses[tone],
         className,
       )}
