@@ -57,6 +57,19 @@ Implemented so far:
   - Recently recommended schools table.
   - Dashboard actions for report export and lead review.
 - Dashboard UI uses the reusable `Card`, `Badge`, and `Button` components and follows the internal operations design direction.
+- `/students` is protected and renders `src/pages/students/StudentsPage.tsx`.
+- `StudentsPage` now renders inside `AppShell` as the Students / Leads operations workspace using API-shaped mock data:
+  - Page header for Students / Leads with Add student and Saved views actions.
+  - Lead summary cards for total leads, new today, awaiting advisor, and follow-up due.
+  - Lead workspace card with search by name, email, phone, country, or program.
+  - Filters for destination country, lead status, and assigned advisor.
+  - Sort control for latest activity.
+  - Responsive horizontal table for student leads.
+  - Table columns include student name, destination, program interest, budget, intake, status, assigned advisor, last activity, and action.
+  - Status badges distinguish New, Awaiting assignment, Assigned, Follow-up, and Application started.
+  - Lead source badges distinguish Telegram and Manual entries.
+  - Pagination controls are present as UI scaffolding.
+- Students / Leads UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
 - The current sign-in submit flow is development-only:
   - prevents default form submission
   - writes `development-token` to `localStorage` as `token`
@@ -65,6 +78,7 @@ Implemented so far:
 Verification status:
 
 - `npx tsc --noEmit` passes after the reusable UI layer, dashboard shell, sidebar, topbar, mobile navigation, profile menu, and dashboard page changes.
+- `npx tsc --noEmit` passes after the Students / Leads page and `/students` route changes.
 - `npm run build` passes and produces the Vite production build in `dist`.
 - `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
@@ -73,6 +87,9 @@ Known next steps:
 - Replace the development-only login behavior with a real auth API call.
 - Add authenticated user state and logout handling.
 - Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Replace Students / Leads mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Add the Student Detail page at `src/pages/students/StudentDetailPage.tsx` and route it from the Students / Leads table action.
+- Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
