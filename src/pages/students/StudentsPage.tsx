@@ -12,6 +12,7 @@ import {
   UserRoundCheck,
   Users,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
@@ -319,9 +320,13 @@ const StudentsPage = () => {
                     </td>
                     <td className="px-6 py-4 text-sm font-medium text-[#6B7280]">{student.lastActivity}</td>
                     <td className="px-6 py-4 text-right">
-                      <Button leftIcon={<Eye size={16} />} size="sm" variant="ghost">
+                      <Link
+                        className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-transparent bg-transparent px-3 text-sm font-semibold text-[#045A58] outline-none transition hover:bg-[#E6F4F3] hover:text-[#034A48] focus:ring-4 focus:ring-[#E6F4F3]"
+                        to={`/students/${student.id}`}
+                      >
+                        <Eye size={16} />
                         Open
-                      </Button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
