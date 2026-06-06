@@ -86,6 +86,19 @@ Implemented so far:
   - Shortlisted schools.
   - Advisor notes list and note-entry UI scaffold.
 - Student Detail UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/schools` is protected and renders `src/pages/schools/SchoolsPage.tsx`.
+- `SchoolsPage` now renders inside `AppShell` as the school directory operations workspace using clearly fictional API-shaped mock data:
+  - Page header with Add school and Export directory actions.
+  - Summary cards for total schools, active records, partner schools, and linked programs.
+  - Search by school name, city, or country.
+  - Working client-side filters for country, city, school type, and partner status.
+  - Responsive horizontal school records table.
+  - Table columns include school name, location, type, partner status, program count, visa friendliness score, last updated, and actions.
+  - Partner, prospect, non-partner, active, and inactive record states.
+  - Program count links and edit/disable action scaffolding.
+  - Empty state with a working Clear filters action.
+  - Pagination controls are present as UI scaffolding.
+- Schools UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
 - The current sign-in submit flow is development-only:
   - prevents default form submission
   - writes `development-token` to `localStorage` as `token`
@@ -96,6 +109,7 @@ Verification status:
 - `npx tsc --noEmit` passes after the reusable UI layer, dashboard shell, sidebar, topbar, mobile navigation, profile menu, and dashboard page changes.
 - `npx tsc --noEmit` passes after the Students / Leads page and `/students` route changes.
 - `npx tsc --noEmit` passes after the Student Detail page and `/students/:studentId` route changes.
+- `npx tsc --noEmit` passes after the Schools page and `/schools` route changes.
 - `npm run build` passes and produces the Vite production build in `dist`.
 - `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
@@ -106,9 +120,11 @@ Known next steps:
 - Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Students / Leads mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Student Detail mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Replace Schools mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
 - Make Student Detail actions functional once advisor assignment, status update, notes, recommendations, and conversation endpoints are available.
-- Add Schools list page at `src/pages/schools/SchoolsPage.tsx`.
+- Make Schools add, export, sorting, pagination, program navigation, edit, and status actions functional once backend endpoints are available.
+- Add School Detail page at `src/pages/schools/SchoolDetailPage.tsx` and route school records to it.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
