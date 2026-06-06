@@ -86,6 +86,101 @@ Implemented so far:
   - Shortlisted schools.
   - Advisor notes list and note-entry UI scaffold.
 - Student Detail UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/schools` is protected and renders `src/pages/schools/SchoolsPage.tsx`.
+- `SchoolsPage` now renders inside `AppShell` as the school directory operations workspace using clearly fictional API-shaped mock data:
+  - Page header with Add school and Export directory actions.
+  - Summary cards for total schools, active records, partner schools, and linked programs.
+  - Search by school name, city, or country.
+  - Working client-side filters for country, city, school type, and partner status.
+  - Responsive horizontal school records table.
+  - Table columns include school name, location, type, partner status, program count, visa friendliness score, last updated, and actions.
+  - Partner, prospect, non-partner, active, and inactive record states.
+  - Program count links and edit/disable action scaffolding.
+  - Empty state with a working Clear filters action.
+  - Pagination controls are present as UI scaffolding.
+- Schools UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/schools/new` is protected and renders `src/pages/schools/AddSchoolPage.tsx`.
+- The Schools directory `Add school` action now links to the dedicated school creation page.
+- `AddSchoolPage` now renders inside `AppShell` as a full-page school creation workflow:
+  - Required school name, school type, city, and country fields.
+  - Record status and school description.
+  - Website, admissions email, and phone contact fields.
+  - Street address and postal code fields.
+  - Partner status, partner-since date, and relationship manager fields.
+  - Visa friendliness score, visa notes, and reputation notes.
+  - Required-fields checklist and post-creation program guidance sidebar.
+  - Responsive Add school actions in the page header and mobile sticky action bar.
+  - Working cancel navigation back to the Schools directory.
+- Add School UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- The current Add School submit behavior is development-only and returns to `/schools` without persisting a school.
+- `/schools/:schoolId` is protected and renders `src/pages/schools/SchoolDetailPage.tsx`.
+- School names and edit actions in the Schools directory now link to the school detail route.
+- `SchoolDetailPage` now renders inside `AppShell` as a school record workspace using clearly fictional API-shaped mock data:
+  - Back link to the Schools directory.
+  - School header with active status, partner status, school ID, Edit school, and Update status actions.
+  - Summary cards for school type, location, active programs, and visa friendliness score.
+  - School profile and record metadata.
+  - Contact and website information.
+  - Registered location details.
+  - Partner status, relationship manager, and partner-since information.
+  - Visa friendliness score and internal assessment notes.
+  - Internal reputation notes.
+  - Related programs table with level, tuition, intake, deadline, and scholarship status.
+  - Add program and view-all-programs action scaffolding.
+- School Detail UI uses the reusable `Card`, `Badge`, and `Button` components and follows the internal operations design direction.
+- `/schools/:schoolId/edit` is protected and renders `src/pages/schools/EditSchoolPage.tsx`.
+- The School Detail `Edit school` action now links to the dedicated school edit page.
+- `EditSchoolPage` now renders inside `AppShell` as a full-page school editing workflow using prefilled API-shaped mock data:
+  - School profile fields for name, type, record status, and description.
+  - Contact fields for website, admissions email, and phone.
+  - Location fields for address, city, country, and postal code.
+  - Partnership fields for partner status, partner-since date, and relationship manager.
+  - Internal assessment fields for visa friendliness score, visa notes, and reputation notes.
+  - Record summary and related-program guidance sidebar.
+  - Cancel navigation back to School Detail.
+  - Responsive Save changes actions in the page header and mobile sticky action bar.
+- School editing uses a dedicated page instead of a modal because the record contains multiple operational sections.
+- Edit School UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- The current Edit School submit behavior is development-only and returns to the School Detail page without persisting changes.
+- `src/components/forms/ProgramForm.tsx` provides the reusable program create/edit form foundation.
+- `ProgramForm` supports two school-assignment modes while preserving one field and payload contract:
+  - Fixed-school mode supplies a hidden `schoolId` and shows the school as read-only.
+  - Select-school mode requires the user to choose a school and submits the selected `schoolId`.
+- `/schools/:schoolId/programs/new` is protected and renders `src/pages/programs/AddProgramPage.tsx`.
+- The School Detail `Add program` action now links to the school-scoped program creation route.
+- `AddProgramPage` now renders inside `AppShell` as a school-scoped program creation workflow:
+  - The parent school is fixed and displayed as read-only context.
+  - Program name, study level, category, and duration fields.
+  - Tuition amount, currency, and scholarship availability fields.
+  - Intake-period checkboxes, primary intake year, and application deadline.
+  - Academic and English entry requirements.
+  - Internal operational notes.
+  - School summary sidebar with location, current program count, and record status.
+  - Ownership guidance explaining that the new program belongs to the school and will appear in the global Programs directory.
+  - Working cancel navigation back to School Detail.
+- Add Program UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- The current Add Program submit behavior is development-only and returns to School Detail without persisting a program.
+- `/programs` is protected and renders `src/pages/programs/ProgramsPage.tsx`.
+- `ProgramsPage` now renders inside `AppShell` as the global program directory using clearly fictional API-shaped mock data:
+  - Summary cards for total programs, study levels, scholarship options, and upcoming deadlines.
+  - Working client-side search by program name, school, or category.
+  - Working filters for country, school, study level, maximum tuition, intake, and scholarship availability.
+  - Responsive horizontal program records table.
+  - Table columns include program name, school, country, level, tuition and currency, intake periods, deadline, scholarship, and action.
+  - School names link to their associated School Detail route.
+  - Program level, intake, and scholarship badges support fast scanning.
+  - Empty state with a working Clear filters action.
+  - Pagination controls are present as UI scaffolding.
+  - Global Add program, sorting, and row edit actions are present as UI scaffolding.
+- Programs UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
+- The Programs page `Add program` action now links to the global program creation route.
+- `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
+  - The user selects the parent school before submitting.
+  - All remaining program fields are shared with the school-scoped Add Program workflow.
+  - The sidebar explains school ownership and global directory visibility.
+  - Cancel navigation returns to the Programs directory.
+- The current global Add Program submit behavior is development-only and returns to `/programs` without persisting a program.
 - The current sign-in submit flow is development-only:
   - prevents default form submission
   - writes `development-token` to `localStorage` as `token`
@@ -96,6 +191,13 @@ Verification status:
 - `npx tsc --noEmit` passes after the reusable UI layer, dashboard shell, sidebar, topbar, mobile navigation, profile menu, and dashboard page changes.
 - `npx tsc --noEmit` passes after the Students / Leads page and `/students` route changes.
 - `npx tsc --noEmit` passes after the Student Detail page and `/students/:studentId` route changes.
+- `npx tsc --noEmit` passes after the Schools page and `/schools` route changes.
+- `npx tsc --noEmit` passes after the Add School page and `/schools/new` route changes.
+- `npx tsc --noEmit` passes after the School Detail page and `/schools/:schoolId` route changes.
+- `npx tsc --noEmit` passes after the Edit School page and `/schools/:schoolId/edit` route changes.
+- `npx tsc --noEmit` passes after the reusable Program form and `/schools/:schoolId/programs/new` route changes.
+- `npx tsc --noEmit` passes after the Programs page and `/programs` route changes.
+- `npx tsc --noEmit` passes after the shared Program form modes and `/programs/new` route changes.
 - `npm run build` passes and produces the Vite production build in `dist`.
 - `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
@@ -106,9 +208,22 @@ Known next steps:
 - Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Students / Leads mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Student Detail mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Replace Schools mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Connect Add School to `POST /api/schools`.
+- Replace School Detail mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Connect Edit School to the school detail query and `PATCH /api/schools/:id`.
+- Connect Add Program to `POST /api/programs` with the route school ID supplied as `schoolId`.
+- Replace Programs mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
 - Make Student Detail actions functional once advisor assignment, status update, notes, recommendations, and conversation endpoints are available.
-- Add Schools list page at `src/pages/schools/SchoolsPage.tsx`.
+- Make Schools add, export, sorting, pagination, program navigation, edit, and status actions functional once backend endpoints are available.
+- Add form validation and API loading, success, and error states to Add School.
+- Make School Detail edit, status, external website, and program actions functional once backend endpoints and forms are available.
+- Add form validation and API loading, success, and error states to Edit School.
+- Add form validation and API loading, success, and error states to Add Program.
+- Connect global Add Program to `POST /api/programs` using the selected `schoolId`.
+- Add Program Detail/Edit routes and wire the Programs table edit action.
+- Make Programs sorting and pagination functional once API query parameters are available.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
