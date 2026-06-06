@@ -7,7 +7,19 @@ import Input from '../ui/Input.js'
 type ProgramFormProps = {
   onCancel: () => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
-  schoolName: string
+  school:
+    | {
+        id: string
+        mode: 'fixed'
+        name: string
+      }
+    | {
+        mode: 'select'
+        options: Array<{
+          id: string
+          name: string
+        }>
+      }
   submitLabel?: string
 }
 
@@ -16,7 +28,7 @@ const intakePeriods = ['Winter', 'Spring', 'Summer', 'Fall']
 const ProgramForm = ({
   onCancel,
   onSubmit,
-  schoolName,
+  school,
   submitLabel = 'Add program',
 }: ProgramFormProps) => {
   return (
@@ -42,7 +54,14 @@ const ProgramForm = ({
             options={['Select category', 'Business', 'Computing and IT', 'Engineering', 'Health Sciences', 'Social Sciences', 'Arts and Design']}
           />
           <Input id="duration" label="Duration" placeholder="e.g. 2 years" />
-          <Input disabled id="school" label="School" value={schoolName} />
+          {school.mode === 'fixed' ? (
+            <>
+              <input name="schoolId" type="hidden" value={school.id} />
+              <Input disabled id="school" label="School" value={school.name} />
+            </>
+          ) : (
+            <SchoolSelect options={school.options} />
+          )}
         </div>
       </FormSection>
 
@@ -186,6 +205,37 @@ const SelectField = ({ id, label, options, required }: SelectFieldProps) => (
       {options.map((option, index) => (
         <option disabled={index === 0 && option.startsWith('Select')} key={option} value={option}>
           {option}
+        </option>
+      ))}
+    </select>
+  </div>
+)
+
+const SchoolSelect = ({
+  options,
+}: {
+  options: Array<{
+    id: string
+    name: string
+  }>
+}) => (
+  <div>
+    <label className="mb-2 block text-sm font-medium text-[#111827]" htmlFor="school-id">
+      School
+    </label>
+    <select
+      className="h-12 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] outline-none transition focus:border-[#045A58] focus:ring-4 focus:ring-[#E6F4F3]"
+      defaultValue=""
+      id="school-id"
+      name="schoolId"
+      required
+    >
+      <option disabled value="">
+        Select school
+      </option>
+      {options.map((option) => (
+        <option key={option.id} value={option.id}>
+          {option.name}
         </option>
       ))}
     </select>

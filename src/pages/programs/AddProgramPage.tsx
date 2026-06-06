@@ -47,7 +47,7 @@ const AddProgramPage = () => {
               event.preventDefault()
               navigate(schoolPath)
             }}
-            schoolName={school.name}
+            school={{ id: displayId, mode: 'fixed', name: school.name }}
           />
 
           <aside className="space-y-6 xl:sticky xl:top-26 xl:self-start">
