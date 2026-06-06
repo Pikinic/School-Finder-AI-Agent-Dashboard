@@ -14,6 +14,7 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
@@ -275,7 +276,12 @@ const SchoolsPage = () => {
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <p className="text-sm font-semibold text-[#111827]">{school.name}</p>
+                              <Link
+                                className="text-sm font-semibold text-[#111827] outline-none transition hover:text-[#045A58] focus:underline"
+                                to={`/schools/${school.id}`}
+                              >
+                                {school.name}
+                              </Link>
                               {school.status === 'Inactive' ? <Badge tone="error">Inactive</Badge> : null}
                             </div>
                             <p className="mt-1 text-xs font-medium text-[#6B7280]">{school.id}</p>
@@ -317,14 +323,14 @@ const SchoolsPage = () => {
                       <td className="px-6 py-4 text-sm font-medium text-[#6B7280]">{school.lastUpdated}</td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-1">
-                          <button
+                          <Link
                             aria-label={`Edit ${school.name}`}
                             className="flex h-9 w-9 items-center justify-center rounded-xl text-[#6B7280] outline-none transition hover:bg-[#E6F4F3] hover:text-[#045A58] focus:ring-4 focus:ring-[#E6F4F3]"
                             title="Edit school"
-                            type="button"
+                            to={`/schools/${school.id}`}
                           >
                             <Pencil size={16} />
-                          </button>
+                          </Link>
                           <button
                             aria-label={`${school.status === 'Active' ? 'Disable' : 'Enable'} ${school.name}`}
                             className="flex h-9 w-9 items-center justify-center rounded-xl text-[#6B7280] outline-none transition hover:bg-[#FEE2E2] hover:text-[#DC2626] focus:ring-4 focus:ring-[#FEE2E2]"
