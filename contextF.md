@@ -114,6 +114,35 @@ Implemented so far:
   - Related programs table with level, tuition, intake, deadline, and scholarship status.
   - Add program and view-all-programs action scaffolding.
 - School Detail UI uses the reusable `Card`, `Badge`, and `Button` components and follows the internal operations design direction.
+- `/schools/:schoolId/edit` is protected and renders `src/pages/schools/EditSchoolPage.tsx`.
+- The School Detail `Edit school` action now links to the dedicated school edit page.
+- `EditSchoolPage` now renders inside `AppShell` as a full-page school editing workflow using prefilled API-shaped mock data:
+  - School profile fields for name, type, record status, and description.
+  - Contact fields for website, admissions email, and phone.
+  - Location fields for address, city, country, and postal code.
+  - Partnership fields for partner status, partner-since date, and relationship manager.
+  - Internal assessment fields for visa friendliness score, visa notes, and reputation notes.
+  - Record summary and related-program guidance sidebar.
+  - Cancel navigation back to School Detail.
+  - Responsive Save changes actions in the page header and mobile sticky action bar.
+- School editing uses a dedicated page instead of a modal because the record contains multiple operational sections.
+- Edit School UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- The current Edit School submit behavior is development-only and returns to the School Detail page without persisting changes.
+- `src/components/forms/ProgramForm.tsx` provides the reusable program create/edit form foundation.
+- `/schools/:schoolId/programs/new` is protected and renders `src/pages/programs/AddProgramPage.tsx`.
+- The School Detail `Add program` action now links to the school-scoped program creation route.
+- `AddProgramPage` now renders inside `AppShell` as a school-scoped program creation workflow:
+  - The parent school is fixed and displayed as read-only context.
+  - Program name, study level, category, and duration fields.
+  - Tuition amount, currency, and scholarship availability fields.
+  - Intake-period checkboxes, primary intake year, and application deadline.
+  - Academic and English entry requirements.
+  - Internal operational notes.
+  - School summary sidebar with location, current program count, and record status.
+  - Ownership guidance explaining that the new program belongs to the school and will appear in the global Programs directory.
+  - Working cancel navigation back to School Detail.
+- Add Program UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- The current Add Program submit behavior is development-only and returns to School Detail without persisting a program.
 - The current sign-in submit flow is development-only:
   - prevents default form submission
   - writes `development-token` to `localStorage` as `token`
@@ -126,6 +155,8 @@ Verification status:
 - `npx tsc --noEmit` passes after the Student Detail page and `/students/:studentId` route changes.
 - `npx tsc --noEmit` passes after the Schools page and `/schools` route changes.
 - `npx tsc --noEmit` passes after the School Detail page and `/schools/:schoolId` route changes.
+- `npx tsc --noEmit` passes after the Edit School page and `/schools/:schoolId/edit` route changes.
+- `npx tsc --noEmit` passes after the reusable Program form and `/schools/:schoolId/programs/new` route changes.
 - `npm run build` passes and produces the Vite production build in `dist`.
 - `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
@@ -138,10 +169,14 @@ Known next steps:
 - Replace Student Detail mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Schools mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace School Detail mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Connect Edit School to the school detail query and `PATCH /api/schools/:id`.
+- Connect Add Program to `POST /api/programs` with the route school ID supplied as `schoolId`.
 - Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
 - Make Student Detail actions functional once advisor assignment, status update, notes, recommendations, and conversation endpoints are available.
 - Make Schools add, export, sorting, pagination, program navigation, edit, and status actions functional once backend endpoints are available.
 - Make School Detail edit, status, external website, and program actions functional once backend endpoints and forms are available.
+- Add form validation and API loading, success, and error states to Edit School.
+- Add form validation and API loading, success, and error states to Add Program.
 - Add Programs list page at `src/pages/programs/ProgramsPage.tsx`.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.

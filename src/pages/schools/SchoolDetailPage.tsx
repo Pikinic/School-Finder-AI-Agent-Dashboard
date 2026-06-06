@@ -166,9 +166,13 @@ const SchoolDetailPage = () => {
                   <h2 className="text-lg font-semibold text-[#111827]">Related programs</h2>
                   <p className="mt-1 text-sm text-[#6B7280]">Programs currently linked to this school record.</p>
                 </div>
-                <Button leftIcon={<Plus size={17} />} size="md">
+                <Link
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-transparent bg-[#045A58] px-4 text-sm font-semibold text-white outline-none transition hover:bg-[#034A48] focus:ring-4 focus:ring-[#E6F4F3]"
+                  to={`/schools/${displayId}/programs/new`}
+                >
+                  <Plus size={17} />
                   Add program
-                </Button>
+                </Link>
               </div>
 
               <div className="overflow-x-auto">

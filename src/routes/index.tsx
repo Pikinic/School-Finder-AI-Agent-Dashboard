@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import LoginPage from '../pages/auth/LoginPage.js'
 import DashboardPage from '../pages/dashboard/DashboardPage.js'
+import AddProgramPage from '../pages/programs/AddProgramPage.js'
 import EditSchoolPage from '../pages/schools/EditSchoolPage.js'
 import SchoolDetailPage from '../pages/schools/SchoolDetailPage.js'
 import SchoolsPage from '../pages/schools/SchoolsPage.js'
@@ -17,6 +18,7 @@ const AppRoutes = () => {
         <Route path='/students/:studentId' element={<ProtectedRoute><StudentDetailPage /></ProtectedRoute>} />
         <Route path='/schools' element={<ProtectedRoute><SchoolsPage /></ProtectedRoute>} />
         <Route path='/schools/:schoolId/edit' element={<ProtectedRoute><EditSchoolPage /></ProtectedRoute>} />
+        <Route path='/schools/:schoolId/programs/new' element={<ProtectedRoute><AddProgramPage /></ProtectedRoute>} />
         <Route path='/schools/:schoolId' element={<ProtectedRoute><SchoolDetailPage /></ProtectedRoute>} />
     </Routes>
   )
