@@ -99,6 +99,20 @@ Implemented so far:
   - Empty state with a working Clear filters action.
   - Pagination controls are present as UI scaffolding.
 - Schools UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/schools/new` is protected and renders `src/pages/schools/AddSchoolPage.tsx`.
+- The Schools directory `Add school` action now links to the dedicated school creation page.
+- `AddSchoolPage` now renders inside `AppShell` as a full-page school creation workflow:
+  - Required school name, school type, city, and country fields.
+  - Record status and school description.
+  - Website, admissions email, and phone contact fields.
+  - Street address and postal code fields.
+  - Partner status, partner-since date, and relationship manager fields.
+  - Visa friendliness score, visa notes, and reputation notes.
+  - Required-fields checklist and post-creation program guidance sidebar.
+  - Responsive Add school actions in the page header and mobile sticky action bar.
+  - Working cancel navigation back to the Schools directory.
+- Add School UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- The current Add School submit behavior is development-only and returns to `/schools` without persisting a school.
 - `/schools/:schoolId` is protected and renders `src/pages/schools/SchoolDetailPage.tsx`.
 - School names and edit actions in the Schools directory now link to the school detail route.
 - `SchoolDetailPage` now renders inside `AppShell` as a school record workspace using clearly fictional API-shaped mock data:
@@ -178,6 +192,7 @@ Verification status:
 - `npx tsc --noEmit` passes after the Students / Leads page and `/students` route changes.
 - `npx tsc --noEmit` passes after the Student Detail page and `/students/:studentId` route changes.
 - `npx tsc --noEmit` passes after the Schools page and `/schools` route changes.
+- `npx tsc --noEmit` passes after the Add School page and `/schools/new` route changes.
 - `npx tsc --noEmit` passes after the School Detail page and `/schools/:schoolId` route changes.
 - `npx tsc --noEmit` passes after the Edit School page and `/schools/:schoolId/edit` route changes.
 - `npx tsc --noEmit` passes after the reusable Program form and `/schools/:schoolId/programs/new` route changes.
@@ -194,6 +209,7 @@ Known next steps:
 - Replace Students / Leads mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Student Detail mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Schools mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Connect Add School to `POST /api/schools`.
 - Replace School Detail mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Connect Edit School to the school detail query and `PATCH /api/schools/:id`.
 - Connect Add Program to `POST /api/programs` with the route school ID supplied as `schoolId`.
@@ -201,6 +217,7 @@ Known next steps:
 - Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
 - Make Student Detail actions functional once advisor assignment, status update, notes, recommendations, and conversation endpoints are available.
 - Make Schools add, export, sorting, pagination, program navigation, edit, and status actions functional once backend endpoints are available.
+- Add form validation and API loading, success, and error states to Add School.
 - Make School Detail edit, status, external website, and program actions functional once backend endpoints and forms are available.
 - Add form validation and API loading, success, and error states to Edit School.
 - Add form validation and API loading, success, and error states to Add Program.

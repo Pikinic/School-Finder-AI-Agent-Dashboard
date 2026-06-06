@@ -168,9 +168,13 @@ const SchoolsPage = () => {
             <Button leftIcon={<ExternalLink size={17} />} size="md" variant="secondary">
               Export directory
             </Button>
-            <Button leftIcon={<Plus size={17} />} size="md">
+            <Link
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-transparent bg-[#045A58] px-4 text-sm font-semibold text-white outline-none transition hover:bg-[#034A48] focus:ring-4 focus:ring-[#E6F4F3]"
+              to="/schools/new"
+            >
+              <Plus size={17} />
               Add school
-            </Button>
+            </Link>
           </div>
         </div>
 
