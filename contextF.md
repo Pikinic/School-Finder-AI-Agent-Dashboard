@@ -239,6 +239,20 @@ Implemented so far:
   - Advisor assignment selector.
   - Conversation metadata for message count, start date, and latest activity.
 - Conversation Detail UI uses the reusable `Card`, `Badge`, and `Button` components and follows the internal operations design direction.
+- `/recommendations` is protected and renders `src/pages/recommendations/RecommendationsPage.tsx`.
+- `RecommendationsPage` now renders inside `AppShell` as the global recommendation review workspace using clearly fictional API-shaped mock data:
+  - Summary cards for generated recommendations, shortlisted options, strong matches, and missing requirements.
+  - Working search by student, school, or program.
+  - Working student and country filters.
+  - Recommendation records grouped with student identity, school, program, country, tuition, and generation time.
+  - Overall fit score and score breakdown for program, budget, intake, and visa factors.
+  - Recommendation reasons and missing-requirement indicators.
+  - Navigation to Student Detail, School Detail, and Program Detail.
+  - Working local shortlist toggles.
+  - Working two-recommendation comparison selection and comparison panel.
+  - Empty state with a working Clear filters action.
+  - Pagination and score-sorting controls are present as UI scaffolding.
+- Recommendations UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
 - `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
 - The Programs page `Add program` action now links to the global program creation route.
 - `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
@@ -269,6 +283,7 @@ Verification status:
 - `npx tsc --noEmit` passes after the shared Program form modes and `/programs/new` route changes.
 - `npx tsc --noEmit` passes after the Conversations page and `/conversations` route changes.
 - `npx tsc --noEmit` passes after the Conversation Detail page and `/conversations/:conversationId` route changes.
+- `npx tsc --noEmit` passes after the Recommendations page and `/recommendations` route changes.
 - `npm run build` passes and produces the Vite production build in `dist`.
 - `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
@@ -290,6 +305,7 @@ Known next steps:
 - Connect Edit Program to the program detail query and `PATCH /api/programs/:id`.
 - Replace Conversations mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Conversation Detail mock data with a TanStack Query-backed `GET /api/conversations/:id` request.
+- Replace Recommendations mock data with TanStack Query-backed recommendation API data when backend endpoints are ready.
 - Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
 - Add form validation and API loading, success, and error states to Add Student.
 - Make Student Detail actions functional once advisor assignment, status update, notes, recommendations, and conversation endpoints are available.
@@ -303,7 +319,8 @@ Known next steps:
 - Make Programs sorting and pagination functional once API query parameters are available.
 - Make Conversations sorting, pagination, advisor assignment, and status actions functional once backend endpoints are available.
 - Make Conversation Detail reply, advisor assignment, escalation, and resolution actions functional once backend endpoints are available.
-- Add Recommendations page at `src/pages/recommendations/RecommendationsPage.tsx`.
+- Make Recommendations shortlist, comparison persistence, sorting, and pagination functional once backend endpoints are available.
+- Add Advisors page at `src/pages/advisors/AdvisorsPage.tsx`.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.

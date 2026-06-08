@@ -8,6 +8,7 @@ import EditProgramPage from '../pages/programs/EditProgramPage.js'
 import GlobalAddProgramPage from '../pages/programs/GlobalAddProgramPage.js'
 import ProgramDetailPage from '../pages/programs/ProgramDetailPage.js'
 import ProgramsPage from '../pages/programs/ProgramsPage.js'
+import RecommendationsPage from '../pages/recommendations/RecommendationsPage.js'
 import AddSchoolPage from '../pages/schools/AddSchoolPage.js'
 import EditSchoolPage from '../pages/schools/EditSchoolPage.js'
 import SchoolDetailPage from '../pages/schools/SchoolDetailPage.js'
@@ -31,6 +32,7 @@ const AppRoutes = () => {
         <Route path='/programs/new' element={<ProtectedRoute><GlobalAddProgramPage /></ProtectedRoute>} />
         <Route path='/programs/:programId/edit' element={<ProtectedRoute><EditProgramPage /></ProtectedRoute>} />
         <Route path='/programs/:programId' element={<ProtectedRoute><ProgramDetailPage /></ProtectedRoute>} />
+        <Route path='/recommendations' element={<ProtectedRoute><RecommendationsPage /></ProtectedRoute>} />
         <Route path='/schools' element={<ProtectedRoute><SchoolsPage /></ProtectedRoute>} />
         <Route path='/schools/new' element={<ProtectedRoute><AddSchoolPage /></ProtectedRoute>} />
         <Route path='/schools/:schoolId/edit' element={<ProtectedRoute><EditSchoolPage /></ProtectedRoute>} />
