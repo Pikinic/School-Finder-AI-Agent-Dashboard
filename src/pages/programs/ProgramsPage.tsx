@@ -330,7 +330,12 @@ const ProgramsPage = () => {
                             <BookOpen size={18} />
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-[#111827]">{program.name}</p>
+                            <Link
+                              className="text-sm font-semibold text-[#111827] outline-none transition hover:text-[#045A58] focus:underline"
+                              to={`/programs/${program.id}`}
+                            >
+                              {program.name}
+                            </Link>
                             <p className="mt-1 text-xs font-medium text-[#6B7280]">
                               {program.id} · {program.category}
                             </p>

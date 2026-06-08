@@ -49,6 +49,7 @@ const school = {
 const programs = [
   {
     deadline: 'June 30, 2026',
+    id: 'PRG-3108',
     intake: 'Fall 2026',
     level: 'Postgraduate',
     name: 'Business Analytics',
@@ -57,6 +58,7 @@ const programs = [
   },
   {
     deadline: 'July 15, 2026',
+    id: 'PRG-3107',
     intake: 'Fall 2026',
     level: 'Postgraduate',
     name: 'Data and Business Intelligence',
@@ -65,6 +67,7 @@ const programs = [
   },
   {
     deadline: 'October 30, 2026',
+    id: 'PRG-3103',
     intake: 'Winter 2027',
     level: 'Diploma',
     name: 'International Business Management',
@@ -189,8 +192,15 @@ const SchoolDetailPage = () => {
                   </thead>
                   <tbody className="divide-y divide-[#E5E7EB]">
                     {programs.map((program) => (
-                      <tr className="transition hover:bg-[#F9FAFB]" key={program.name}>
-                        <td className="px-6 py-4 text-sm font-semibold text-[#111827]">{program.name}</td>
+                      <tr className="transition hover:bg-[#F9FAFB]" key={program.id}>
+                        <td className="px-6 py-4">
+                          <Link
+                            className="text-sm font-semibold text-[#111827] outline-none transition hover:text-[#045A58] focus:underline"
+                            to={`/programs/${program.id}`}
+                          >
+                            {program.name}
+                          </Link>
+                        </td>
                         <td className="px-6 py-4 text-sm text-[#6B7280]">{program.level}</td>
                         <td className="px-6 py-4 text-sm font-medium text-[#111827]">{program.tuition}</td>
                         <td className="px-6 py-4 text-sm text-[#6B7280]">{program.intake}</td>
