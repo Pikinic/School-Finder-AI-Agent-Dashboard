@@ -330,7 +330,12 @@ const ProgramsPage = () => {
                             <BookOpen size={18} />
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-[#111827]">{program.name}</p>
+                            <Link
+                              className="text-sm font-semibold text-[#111827] outline-none transition hover:text-[#045A58] focus:underline"
+                              to={`/programs/${program.id}`}
+                            >
+                              {program.name}
+                            </Link>
                             <p className="mt-1 text-xs font-medium text-[#6B7280]">
                               {program.id} · {program.category}
                             </p>
@@ -370,14 +375,14 @@ const ProgramsPage = () => {
                         <Badge tone={scholarshipTone[program.scholarship]}>{program.scholarship}</Badge>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button
+                        <Link
                           aria-label={`Edit ${program.name}`}
                           className="inline-flex h-9 w-9 items-center justify-center rounded-xl text-[#6B7280] outline-none transition hover:bg-[#E6F4F3] hover:text-[#045A58] focus:ring-4 focus:ring-[#E6F4F3]"
                           title="Edit program"
-                          type="button"
+                          to={`/programs/${program.id}/edit`}
                         >
                           <Pencil size={16} />
-                        </button>
+                        </Link>
                       </td>
                     </tr>
                   ))}

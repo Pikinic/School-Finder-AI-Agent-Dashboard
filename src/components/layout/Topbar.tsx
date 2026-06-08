@@ -1,5 +1,6 @@
 import { Bell, ChevronDown, LogOut, Menu, Plus, Search, Settings, UserRound } from 'lucide-react'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Input from '../ui/Input.js'
 import { cn } from '../../utils/cn.js'
 
@@ -39,14 +40,14 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
         </div>
 
         <div className="flex shrink-0 items-center gap-3">
-          <button
+          <Link
             aria-label="Add student"
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-transparent bg-[#045A58] text-white outline-none transition hover:bg-[#034A48] focus:ring-4 focus:ring-[#E6F4F3] xl:w-auto xl:gap-2 xl:px-4"
-            type="button"
+            to="/students/new"
           >
             <Plus size={24} strokeWidth={2.8} />
             <span className="hidden xl:inline">Add student</span>
-          </button>
+          </Link>
 
           <button
             aria-label="View notifications"

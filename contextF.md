@@ -70,6 +70,22 @@ Implemented so far:
   - Lead source badges distinguish Telegram and Manual entries.
   - Pagination controls are present as UI scaffolding.
 - Students / Leads UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/students/new` is protected and renders `src/pages/students/AddStudentPage.tsx`.
+- The Students / Leads page and global topbar `Add student` actions now link to the manual lead creation route.
+- `AddStudentPage` now renders inside `AppShell` as a full-page manual lead creation workflow:
+  - Basic profile fields for name, email, phone, and current country.
+  - Required acquisition-source selection for Facebook, Instagram, website, WhatsApp, phone call, walk-in, referral, education fair, spreadsheet import, or other.
+  - Optional campaign/referral reference and source notes.
+  - Destination-country choices, program interest, and study level.
+  - Budget range, currency, target intake, scholarship interest, and visa priority.
+  - Academic qualification and English-test information.
+  - Initial lead status, advisor assignment, and internal notes.
+  - Required-fields, source-handling, and post-creation guidance sidebar.
+  - Responsive Add student actions in the page header and mobile sticky action bar.
+  - Working cancel navigation back to Students / Leads.
+- Telegram leads remain system-created records with Telegram as their source; this page is for staff entry of leads acquired through other channels.
+- Add Student UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- The current Add Student submit behavior is development-only and returns to `/students` without persisting a lead.
 - `/students/:studentId` is protected and renders `src/pages/students/StudentDetailPage.tsx`.
 - The Students / Leads table `Open` action now links to the student detail route.
 - `StudentDetailPage` now renders inside `AppShell` as a CRM-style student record using API-shaped mock data:
@@ -146,6 +162,7 @@ Implemented so far:
 - `ProgramForm` supports two school-assignment modes while preserving one field and payload contract:
   - Fixed-school mode supplies a hidden `schoolId` and shows the school as read-only.
   - Select-school mode requires the user to choose a school and submits the selected `schoolId`.
+- `ProgramForm` also accepts optional initial values so the same component supports create and edit workflows without duplicating fields.
 - `/schools/:schoolId/programs/new` is protected and renders `src/pages/programs/AddProgramPage.tsx`.
 - The School Detail `Add program` action now links to the school-scoped program creation route.
 - `AddProgramPage` now renders inside `AppShell` as a school-scoped program creation workflow:
@@ -173,6 +190,31 @@ Implemented so far:
   - Pagination controls are present as UI scaffolding.
   - Global Add program, sorting, and row edit actions are present as UI scaffolding.
 - Programs UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/programs/:programId` is protected and renders `src/pages/programs/ProgramDetailPage.tsx`.
+- Program names in both the global Programs directory and the School Detail related-programs table now link to the same shared Program Detail route.
+- `ProgramDetailPage` now renders inside `AppShell` as the single program record view regardless of where the user opens it:
+  - Program header with active status, study level, program ID, Edit program, and Update status actions.
+  - Summary cards for study level, tuition, duration, and next deadline.
+  - Program profile and record metadata.
+  - Linked school ownership card with navigation to School Detail.
+  - Intake periods and application deadline.
+  - Tuition and scholarship information.
+  - Academic and English entry requirements.
+  - Internal operational notes.
+- Program Detail UI uses the reusable `Card`, `Badge`, and `Button` components and follows the internal operations design direction.
+- `/programs/:programId/edit` is protected and renders `src/pages/programs/EditProgramPage.tsx`.
+- The Program Detail `Edit program` action and Programs directory row edit actions now link to the same shared Program Edit route.
+- `EditProgramPage` reuses `ProgramForm` with prefilled API-shaped mock data:
+  - Program name, level, category, and duration.
+  - Current school ownership with the option to select another school.
+  - Tuition, currency, and scholarship availability.
+  - Intake periods, primary intake year, and application deadline.
+  - Academic and English requirements.
+  - Internal operational notes.
+  - Record summary, school-ownership guidance, and directory-impact sidebar.
+  - Working cancel navigation back to Program Detail.
+- Program editing updates the same conceptual program record regardless of whether it was opened from School Detail or the global Programs directory.
+- The current Edit Program submit behavior is development-only and returns to Program Detail without persisting changes.
 - `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
 - The Programs page `Add program` action now links to the global program creation route.
 - `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
@@ -190,6 +232,7 @@ Verification status:
 
 - `npx tsc --noEmit` passes after the reusable UI layer, dashboard shell, sidebar, topbar, mobile navigation, profile menu, and dashboard page changes.
 - `npx tsc --noEmit` passes after the Students / Leads page and `/students` route changes.
+- `npx tsc --noEmit` passes after the Add Student page and `/students/new` route changes.
 - `npx tsc --noEmit` passes after the Student Detail page and `/students/:studentId` route changes.
 - `npx tsc --noEmit` passes after the Schools page and `/schools` route changes.
 - `npx tsc --noEmit` passes after the Add School page and `/schools/new` route changes.
@@ -197,6 +240,8 @@ Verification status:
 - `npx tsc --noEmit` passes after the Edit School page and `/schools/:schoolId/edit` route changes.
 - `npx tsc --noEmit` passes after the reusable Program form and `/schools/:schoolId/programs/new` route changes.
 - `npx tsc --noEmit` passes after the Programs page and `/programs` route changes.
+- `npx tsc --noEmit` passes after the Program Detail page and `/programs/:programId` route changes.
+- `npx tsc --noEmit` passes after the Edit Program page, reusable form prefilling, and `/programs/:programId/edit` route changes.
 - `npx tsc --noEmit` passes after the shared Program form modes and `/programs/new` route changes.
 - `npm run build` passes and produces the Vite production build in `dist`.
 - `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
@@ -207,6 +252,7 @@ Known next steps:
 - Add authenticated user state and logout handling.
 - Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Students / Leads mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Connect Add Student to `POST /api/students` and persist acquisition source metadata.
 - Replace Student Detail mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Schools mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Connect Add School to `POST /api/schools`.
@@ -214,7 +260,10 @@ Known next steps:
 - Connect Edit School to the school detail query and `PATCH /api/schools/:id`.
 - Connect Add Program to `POST /api/programs` with the route school ID supplied as `schoolId`.
 - Replace Programs mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Replace Program Detail mock data with a TanStack Query-backed `GET /api/programs/:id` request.
+- Connect Edit Program to the program detail query and `PATCH /api/programs/:id`.
 - Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
+- Add form validation and API loading, success, and error states to Add Student.
 - Make Student Detail actions functional once advisor assignment, status update, notes, recommendations, and conversation endpoints are available.
 - Make Schools add, export, sorting, pagination, program navigation, edit, and status actions functional once backend endpoints are available.
 - Add form validation and API loading, success, and error states to Add School.
@@ -222,7 +271,7 @@ Known next steps:
 - Add form validation and API loading, success, and error states to Edit School.
 - Add form validation and API loading, success, and error states to Add Program.
 - Connect global Add Program to `POST /api/programs` using the selected `schoolId`.
-- Add Program Detail/Edit routes and wire the Programs table edit action.
+- Add form validation and API loading, success, and error states to Edit Program.
 - Make Programs sorting and pagination functional once API query parameters are available.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
@@ -696,6 +745,8 @@ type Student = {
   fullName: string;
   email?: string;
   phone?: string;
+  source?: string;
+  sourceReference?: string;
   currentCountry?: string;
   destinationCountries: string[];
   preferredProgram?: string;

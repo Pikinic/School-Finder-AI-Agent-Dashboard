@@ -5,6 +5,7 @@ import Card from '../ui/Card.js'
 import Input from '../ui/Input.js'
 
 type ProgramFormProps = {
+  initialValues?: ProgramFormValues
   onCancel: () => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
   school:
@@ -23,9 +24,27 @@ type ProgramFormProps = {
   submitLabel?: string
 }
 
+export type ProgramFormValues = {
+  academicRequirement?: string
+  applicationDeadline?: string
+  category?: string
+  duration?: string
+  englishRequirement?: string
+  intakePeriods?: string[]
+  intakeYear?: string
+  level?: string
+  name?: string
+  notes?: string
+  scholarshipAvailable?: boolean
+  schoolId?: string
+  tuitionAmount?: string
+  tuitionCurrency?: string
+}
+
 const intakePeriods = ['Winter', 'Spring', 'Summer', 'Fall']
 
 const ProgramForm = ({
+  initialValues = {},
   onCancel,
   onSubmit,
   school,
@@ -40,27 +59,44 @@ const ProgramForm = ({
       >
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <Input id="program-name" label="Program name" placeholder="e.g. Business Analytics" required />
+            <Input
+              defaultValue={initialValues.name}
+              id="program-name"
+              label="Program name"
+              name="name"
+              placeholder="e.g. Business Analytics"
+              required
+            />
           </div>
           <SelectField
+            defaultValue={initialValues.level}
             id="study-level"
             label="Study level"
+            name="level"
             options={['Select level', 'Certificate', 'Diploma', 'Undergraduate', 'Postgraduate', 'Masters', 'Doctorate']}
             required
           />
           <SelectField
+            defaultValue={initialValues.category}
             id="program-category"
             label="Category"
+            name="category"
             options={['Select category', 'Business', 'Computing and IT', 'Engineering', 'Health Sciences', 'Social Sciences', 'Arts and Design']}
           />
-          <Input id="duration" label="Duration" placeholder="e.g. 2 years" />
+          <Input
+            defaultValue={initialValues.duration}
+            id="duration"
+            label="Duration"
+            name="duration"
+            placeholder="e.g. 2 years"
+          />
           {school.mode === 'fixed' ? (
             <>
               <input name="schoolId" type="hidden" value={school.id} />
               <Input disabled id="school" label="School" value={school.name} />
             </>
           ) : (
-            <SchoolSelect options={school.options} />
+            <SchoolSelect defaultValue={initialValues.schoolId} options={school.options} />
           )}
         </div>
       </FormSection>
@@ -71,15 +107,30 @@ const ProgramForm = ({
         title="Tuition and funding"
       >
         <div className="grid gap-5 sm:grid-cols-2">
-          <Input id="tuition-amount" label="Tuition amount" min="0" placeholder="22400" type="number" />
+          <Input
+            defaultValue={initialValues.tuitionAmount}
+            id="tuition-amount"
+            label="Tuition amount"
+            min="0"
+            name="tuitionAmount"
+            placeholder="22400"
+            type="number"
+          />
           <SelectField
+            defaultValue={initialValues.tuitionCurrency}
             id="tuition-currency"
             label="Currency"
+            name="tuitionCurrency"
             options={['CAD', 'USD', 'GBP', 'AUD', 'EUR']}
           />
           <div className="sm:col-span-2">
             <label className="flex items-start gap-3 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-              <input className="mt-0.5 h-4 w-4 accent-[#045A58]" name="scholarshipAvailable" type="checkbox" />
+              <input
+                className="mt-0.5 h-4 w-4 accent-[#045A58]"
+                defaultChecked={initialValues.scholarshipAvailable}
+                name="scholarshipAvailable"
+                type="checkbox"
+              />
               <span>
                 <span className="block text-sm font-semibold text-[#111827]">Scholarship available</span>
                 <span className="mt-1 block text-sm leading-5 text-[#6B7280]">
@@ -104,15 +155,35 @@ const ProgramForm = ({
                 className="flex h-12 items-center gap-3 rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm font-medium text-[#374151]"
                 key={intake}
               >
-                <input className="h-4 w-4 accent-[#045A58]" name="intakePeriods" type="checkbox" value={intake} />
+                <input
+                  className="h-4 w-4 accent-[#045A58]"
+                  defaultChecked={initialValues.intakePeriods?.includes(intake)}
+                  name="intakePeriods"
+                  type="checkbox"
+                  value={intake}
+                />
                 {intake}
               </label>
             ))}
           </div>
         </fieldset>
         <div className="mt-5 grid gap-5 sm:grid-cols-2">
-          <Input id="application-deadline" label="Application deadline" type="date" />
-          <Input id="intake-year" label="Primary intake year" min="2026" placeholder="2027" type="number" />
+          <Input
+            defaultValue={initialValues.applicationDeadline}
+            id="application-deadline"
+            label="Application deadline"
+            name="applicationDeadline"
+            type="date"
+          />
+          <Input
+            defaultValue={initialValues.intakeYear}
+            id="intake-year"
+            label="Primary intake year"
+            min="2026"
+            name="intakeYear"
+            placeholder="2027"
+            type="number"
+          />
         </div>
       </FormSection>
 
@@ -123,14 +194,18 @@ const ProgramForm = ({
       >
         <div className="grid gap-5">
           <TextareaField
+            defaultValue={initialValues.academicRequirement}
             id="academic-requirement"
             label="Academic requirement"
+            name="academicRequirement"
             placeholder="Required qualification, minimum grade, and prerequisite subjects."
             rows={4}
           />
           <TextareaField
+            defaultValue={initialValues.englishRequirement}
             id="english-requirement"
             label="English requirement"
+            name="englishRequirement"
             placeholder="Accepted tests and minimum scores."
             rows={4}
           />
@@ -143,8 +218,10 @@ const ProgramForm = ({
         title="Operational notes"
       >
         <TextareaField
+          defaultValue={initialValues.notes}
           id="program-notes"
           label="Notes"
+          name="notes"
           placeholder="Add application, pathway, document, or partner guidance."
           rows={5}
         />
@@ -185,21 +262,24 @@ const FormSection = ({ children, description, icon, title }: FormSectionProps) =
 )
 
 type SelectFieldProps = {
+  defaultValue?: string | undefined
   id: string
   label: string
+  name: string
   options: string[]
   required?: boolean
 }
 
-const SelectField = ({ id, label, options, required }: SelectFieldProps) => (
+const SelectField = ({ defaultValue, id, label, name, options, required }: SelectFieldProps) => (
   <div>
     <label className="mb-2 block text-sm font-medium text-[#111827]" htmlFor={id}>
       {label}
     </label>
     <select
       className="h-12 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] outline-none transition focus:border-[#045A58] focus:ring-4 focus:ring-[#E6F4F3]"
-      defaultValue={options[0]}
+      defaultValue={defaultValue ?? options[0]}
       id={id}
+      name={name}
       required={required}
     >
       {options.map((option, index) => (
@@ -212,8 +292,10 @@ const SelectField = ({ id, label, options, required }: SelectFieldProps) => (
 )
 
 const SchoolSelect = ({
+  defaultValue,
   options,
 }: {
+  defaultValue?: string | undefined
   options: Array<{
     id: string
     name: string
@@ -225,7 +307,7 @@ const SchoolSelect = ({
     </label>
     <select
       className="h-12 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] outline-none transition focus:border-[#045A58] focus:ring-4 focus:ring-[#E6F4F3]"
-      defaultValue=""
+      defaultValue={defaultValue ?? ''}
       id="school-id"
       name="schoolId"
       required
@@ -243,20 +325,24 @@ const SchoolSelect = ({
 )
 
 type TextareaFieldProps = {
+  defaultValue?: string | undefined
   id: string
   label: string
+  name: string
   placeholder: string
   rows: number
 }
 
-const TextareaField = ({ id, label, placeholder, rows }: TextareaFieldProps) => (
+const TextareaField = ({ defaultValue, id, label, name, placeholder, rows }: TextareaFieldProps) => (
   <div>
     <label className="mb-2 block text-sm font-medium text-[#111827]" htmlFor={id}>
       {label}
     </label>
     <textarea
       className="w-full resize-y rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm leading-6 text-[#111827] outline-none transition placeholder:text-[#9CA3AF] focus:border-[#045A58] focus:ring-4 focus:ring-[#E6F4F3]"
+      defaultValue={defaultValue}
       id={id}
+      name={name}
       placeholder={placeholder}
       rows={rows}
     />
