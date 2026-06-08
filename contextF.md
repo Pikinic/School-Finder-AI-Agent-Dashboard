@@ -310,6 +310,78 @@ Optional UI libraries:
 - Radix UI
 - Headless UI
 
+## Package Status
+
+### Installed and Currently Used
+
+Runtime packages:
+
+- `react` - component rendering, hooks, and application UI.
+- `react-dom` - mounts the React application in the browser.
+- `react-router-dom` - routes, protected-page navigation, links, route parameters, and redirects.
+- `lucide-react` - interface icons used throughout the dashboard.
+
+Build and development packages:
+
+- `vite` - development server and production build tool.
+- `typescript` - static typing and `tsc --noEmit` verification.
+- `tailwindcss` - utility-first styling used across all pages and components.
+- `@tailwindcss/vite` - integrates Tailwind CSS with Vite.
+- `@vitejs/plugin-react` - React support for Vite.
+- `eslint` - JavaScript/TypeScript lint command runner, although TypeScript parsing is not fully configured yet.
+- `@eslint/js` - base ESLint JavaScript rules.
+- `eslint-plugin-react-hooks` - React Hooks lint rules.
+- `eslint-plugin-react-refresh` - Vite React Fast Refresh lint rules.
+- `globals` - browser global definitions for ESLint.
+- `@types/react` and `@types/react-dom` - React TypeScript declarations.
+- `@types/node` - Node.js type declarations available for build/configuration files.
+
+### Installed but Not Yet Integrated
+
+- `@tanstack/react-query` - intended for API fetching, caching, loading states, error states, and query invalidation once backend integration starts.
+- `axios` - intended for the shared API client and authenticated HTTP requests.
+- `react-hook-form` - intended to replace the current native development-only form handling.
+- `zod` - intended for form schemas, API payload validation, and typed validation errors.
+- `zustand` - available for lightweight authentication or shared client state, but should only be used when local state or React Context is insufficient.
+
+These packages should not be imported only because they are installed. They should be introduced when the related API, validation, or shared-state work begins.
+
+### Not Installed but Needed
+
+Immediate planned additions:
+
+- `@hookform/resolvers` - connects Zod schemas to React Hook Form through `zodResolver`.
+- `typescript-eslint` - provides the TypeScript parser and ESLint rules required to lint `.ts` and `.tsx` files correctly.
+
+Expected installation:
+
+```bash
+npm install @hookform/resolvers
+npm install --save-dev typescript-eslint
+```
+
+### Testing Packages Not Yet Installed
+
+These are recommended when automated component and workflow tests are introduced:
+
+- `vitest` - unit and component test runner compatible with Vite.
+- `jsdom` - browser-like DOM environment for tests.
+- `@testing-library/react` - React component testing utilities.
+- `@testing-library/jest-dom` - DOM-focused assertions.
+- `@testing-library/user-event` - realistic user interaction simulation.
+
+Expected installation when test work begins:
+
+```bash
+npm install --save-dev vitest jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
+```
+
+### Optional Packages Not Currently Required
+
+- `shadcn/ui`, Radix UI, and Headless UI are not installed.
+- The current reusable UI layer is custom-built, so these libraries should only be added if a future component requires their accessibility or interaction primitives.
+- A separate Tailwind class-conflict package such as `tailwind-merge` is not currently required. The existing `cn` helper only removes falsy class values and joins class names.
+
 ## Design Direction
 
 The dashboard should feel like a practical internal operations tool, not a marketing website.
@@ -633,13 +705,19 @@ school-finder-frontend/
         DashboardPage.tsx
       students/
         StudentsPage.tsx
+        AddStudentPage.tsx
         StudentDetailPage.tsx
       schools/
         SchoolsPage.tsx
+        AddSchoolPage.tsx
         SchoolDetailPage.tsx
+        EditSchoolPage.tsx
       programs/
         ProgramsPage.tsx
+        AddProgramPage.tsx
+        GlobalAddProgramPage.tsx
         ProgramDetailPage.tsx
+        EditProgramPage.tsx
       conversations/
         ConversationsPage.tsx
         ConversationDetailPage.tsx
