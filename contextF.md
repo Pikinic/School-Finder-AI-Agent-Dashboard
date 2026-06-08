@@ -215,6 +215,30 @@ Implemented so far:
   - Working cancel navigation back to Program Detail.
 - Program editing updates the same conceptual program record regardless of whether it was opened from School Detail or the global Programs directory.
 - The current Edit Program submit behavior is development-only and returns to Program Detail without persisting changes.
+- `/conversations` is protected and renders `src/pages/conversations/ConversationsPage.tsx`.
+- `ConversationsPage` now renders inside `AppShell` as the Telegram conversation operations queue using clearly fictional API-shaped mock data:
+  - Summary cards for active, escalated, unassigned, and resolved conversations.
+  - Working search by student, student ID, AI summary, or extracted filter.
+  - Working status tabs for All, Active, Escalated, Resolved, and Unassigned.
+  - Working advisor filter.
+  - Conversation rows with student identity, unread count, status, message count, AI-generated summary, and extracted-filter badges.
+  - Assigned-advisor state, latest activity, conversation start date, and Open action scaffolding.
+  - Empty state with a working Clear filters action.
+  - Pagination and latest-activity sorting controls are present as UI scaffolding.
+- Conversations UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/conversations/:conversationId` is protected and renders `src/pages/conversations/ConversationDetailPage.tsx`.
+- The Conversations queue `Open` action now links to the conversation detail route.
+- `ConversationDetailPage` now renders inside `AppShell` as a Telegram conversation review workspace using clearly fictional API-shaped mock data:
+  - Back link to the Conversations queue.
+  - Conversation header with student name, active status, conversation ID, Escalate, and Mark resolved actions.
+  - Full message history with distinct student, AI-agent, and advisor message styling.
+  - Advisor reply composer UI scaffold.
+  - Student contact card with navigation to Student Detail.
+  - AI-generated conversation summary.
+  - AI-extracted filter badges.
+  - Advisor assignment selector.
+  - Conversation metadata for message count, start date, and latest activity.
+- Conversation Detail UI uses the reusable `Card`, `Badge`, and `Button` components and follows the internal operations design direction.
 - `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
 - The Programs page `Add program` action now links to the global program creation route.
 - `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
@@ -243,6 +267,8 @@ Verification status:
 - `npx tsc --noEmit` passes after the Program Detail page and `/programs/:programId` route changes.
 - `npx tsc --noEmit` passes after the Edit Program page, reusable form prefilling, and `/programs/:programId/edit` route changes.
 - `npx tsc --noEmit` passes after the shared Program form modes and `/programs/new` route changes.
+- `npx tsc --noEmit` passes after the Conversations page and `/conversations` route changes.
+- `npx tsc --noEmit` passes after the Conversation Detail page and `/conversations/:conversationId` route changes.
 - `npm run build` passes and produces the Vite production build in `dist`.
 - `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
@@ -262,6 +288,8 @@ Known next steps:
 - Replace Programs mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Program Detail mock data with a TanStack Query-backed `GET /api/programs/:id` request.
 - Connect Edit Program to the program detail query and `PATCH /api/programs/:id`.
+- Replace Conversations mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Replace Conversation Detail mock data with a TanStack Query-backed `GET /api/conversations/:id` request.
 - Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
 - Add form validation and API loading, success, and error states to Add Student.
 - Make Student Detail actions functional once advisor assignment, status update, notes, recommendations, and conversation endpoints are available.
@@ -273,6 +301,9 @@ Known next steps:
 - Connect global Add Program to `POST /api/programs` using the selected `schoolId`.
 - Add form validation and API loading, success, and error states to Edit Program.
 - Make Programs sorting and pagination functional once API query parameters are available.
+- Make Conversations sorting, pagination, advisor assignment, and status actions functional once backend endpoints are available.
+- Make Conversation Detail reply, advisor assignment, escalation, and resolution actions functional once backend endpoints are available.
+- Add Recommendations page at `src/pages/recommendations/RecommendationsPage.tsx`.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
@@ -309,6 +340,78 @@ Optional UI libraries:
 - shadcn/ui
 - Radix UI
 - Headless UI
+
+## Package Status
+
+### Installed and Currently Used
+
+Runtime packages:
+
+- `react` - component rendering, hooks, and application UI.
+- `react-dom` - mounts the React application in the browser.
+- `react-router-dom` - routes, protected-page navigation, links, route parameters, and redirects.
+- `lucide-react` - interface icons used throughout the dashboard.
+
+Build and development packages:
+
+- `vite` - development server and production build tool.
+- `typescript` - static typing and `tsc --noEmit` verification.
+- `tailwindcss` - utility-first styling used across all pages and components.
+- `@tailwindcss/vite` - integrates Tailwind CSS with Vite.
+- `@vitejs/plugin-react` - React support for Vite.
+- `eslint` - JavaScript/TypeScript lint command runner, although TypeScript parsing is not fully configured yet.
+- `@eslint/js` - base ESLint JavaScript rules.
+- `eslint-plugin-react-hooks` - React Hooks lint rules.
+- `eslint-plugin-react-refresh` - Vite React Fast Refresh lint rules.
+- `globals` - browser global definitions for ESLint.
+- `@types/react` and `@types/react-dom` - React TypeScript declarations.
+- `@types/node` - Node.js type declarations available for build/configuration files.
+
+### Installed but Not Yet Integrated
+
+- `@tanstack/react-query` - intended for API fetching, caching, loading states, error states, and query invalidation once backend integration starts.
+- `axios` - intended for the shared API client and authenticated HTTP requests.
+- `react-hook-form` - intended to replace the current native development-only form handling.
+- `zod` - intended for form schemas, API payload validation, and typed validation errors.
+- `zustand` - available for lightweight authentication or shared client state, but should only be used when local state or React Context is insufficient.
+
+These packages should not be imported only because they are installed. They should be introduced when the related API, validation, or shared-state work begins.
+
+### Not Installed but Needed
+
+Immediate planned additions:
+
+- `@hookform/resolvers` - connects Zod schemas to React Hook Form through `zodResolver`.
+- `typescript-eslint` - provides the TypeScript parser and ESLint rules required to lint `.ts` and `.tsx` files correctly.
+
+Expected installation:
+
+```bash
+npm install @hookform/resolvers
+npm install --save-dev typescript-eslint
+```
+
+### Testing Packages Not Yet Installed
+
+These are recommended when automated component and workflow tests are introduced:
+
+- `vitest` - unit and component test runner compatible with Vite.
+- `jsdom` - browser-like DOM environment for tests.
+- `@testing-library/react` - React component testing utilities.
+- `@testing-library/jest-dom` - DOM-focused assertions.
+- `@testing-library/user-event` - realistic user interaction simulation.
+
+Expected installation when test work begins:
+
+```bash
+npm install --save-dev vitest jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
+```
+
+### Optional Packages Not Currently Required
+
+- `shadcn/ui`, Radix UI, and Headless UI are not installed.
+- The current reusable UI layer is custom-built, so these libraries should only be added if a future component requires their accessibility or interaction primitives.
+- A separate Tailwind class-conflict package such as `tailwind-merge` is not currently required. The existing `cn` helper only removes falsy class values and joins class names.
 
 ## Design Direction
 
@@ -633,13 +736,19 @@ school-finder-frontend/
         DashboardPage.tsx
       students/
         StudentsPage.tsx
+        AddStudentPage.tsx
         StudentDetailPage.tsx
       schools/
         SchoolsPage.tsx
+        AddSchoolPage.tsx
         SchoolDetailPage.tsx
+        EditSchoolPage.tsx
       programs/
         ProgramsPage.tsx
+        AddProgramPage.tsx
+        GlobalAddProgramPage.tsx
         ProgramDetailPage.tsx
+        EditProgramPage.tsx
       conversations/
         ConversationsPage.tsx
         ConversationDetailPage.tsx

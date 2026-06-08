@@ -1,5 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import LoginPage from '../pages/auth/LoginPage.js'
+import ConversationDetailPage from '../pages/conversations/ConversationDetailPage.js'
+import ConversationsPage from '../pages/conversations/ConversationsPage.js'
 import DashboardPage from '../pages/dashboard/DashboardPage.js'
 import AddProgramPage from '../pages/programs/AddProgramPage.js'
 import EditProgramPage from '../pages/programs/EditProgramPage.js'
@@ -20,6 +22,8 @@ const AppRoutes = () => {
     <Routes>
         <Route path='/login' element={<LoginPage />} />
         <Route path='/' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path='/conversations' element={<ProtectedRoute><ConversationsPage /></ProtectedRoute>} />
+        <Route path='/conversations/:conversationId' element={<ProtectedRoute><ConversationDetailPage /></ProtectedRoute>} />
         <Route path='/students' element={<ProtectedRoute><StudentsPage /></ProtectedRoute>} />
         <Route path='/students/new' element={<ProtectedRoute><AddStudentPage /></ProtectedRoute>} />
         <Route path='/students/:studentId' element={<ProtectedRoute><StudentDetailPage /></ProtectedRoute>} />
