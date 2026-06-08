@@ -79,9 +79,13 @@ const ProgramDetailPage = () => {
             <Button leftIcon={<CheckCircle2 size={17} />} size="md" variant="secondary">
               Update status
             </Button>
-            <Button leftIcon={<Pencil size={17} />} size="md">
+            <Link
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-transparent bg-[#045A58] px-4 text-sm font-semibold text-white outline-none transition hover:bg-[#034A48] focus:ring-4 focus:ring-[#E6F4F3]"
+              to={`/programs/${displayId}/edit`}
+            >
+              <Pencil size={17} />
               Edit program
-            </Button>
+            </Link>
           </div>
         </div>
 
