@@ -10,6 +10,7 @@ import AddSchoolPage from '../pages/schools/AddSchoolPage.js'
 import EditSchoolPage from '../pages/schools/EditSchoolPage.js'
 import SchoolDetailPage from '../pages/schools/SchoolDetailPage.js'
 import SchoolsPage from '../pages/schools/SchoolsPage.js'
+import AddStudentPage from '../pages/students/AddStudentPage.js'
 import StudentDetailPage from '../pages/students/StudentDetailPage.js'
 import StudentsPage from '../pages/students/StudentsPage.js'
 import ProtectedRoute from './ProtectedRoute.js'
@@ -20,6 +21,7 @@ const AppRoutes = () => {
         <Route path='/login' element={<LoginPage />} />
         <Route path='/' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path='/students' element={<ProtectedRoute><StudentsPage /></ProtectedRoute>} />
+        <Route path='/students/new' element={<ProtectedRoute><AddStudentPage /></ProtectedRoute>} />
         <Route path='/students/:studentId' element={<ProtectedRoute><StudentDetailPage /></ProtectedRoute>} />
         <Route path='/programs' element={<ProtectedRoute><ProgramsPage /></ProtectedRoute>} />
         <Route path='/programs/new' element={<ProtectedRoute><GlobalAddProgramPage /></ProtectedRoute>} />

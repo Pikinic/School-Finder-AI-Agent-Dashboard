@@ -70,6 +70,22 @@ Implemented so far:
   - Lead source badges distinguish Telegram and Manual entries.
   - Pagination controls are present as UI scaffolding.
 - Students / Leads UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/students/new` is protected and renders `src/pages/students/AddStudentPage.tsx`.
+- The Students / Leads page and global topbar `Add student` actions now link to the manual lead creation route.
+- `AddStudentPage` now renders inside `AppShell` as a full-page manual lead creation workflow:
+  - Basic profile fields for name, email, phone, and current country.
+  - Required acquisition-source selection for Facebook, Instagram, website, WhatsApp, phone call, walk-in, referral, education fair, spreadsheet import, or other.
+  - Optional campaign/referral reference and source notes.
+  - Destination-country choices, program interest, and study level.
+  - Budget range, currency, target intake, scholarship interest, and visa priority.
+  - Academic qualification and English-test information.
+  - Initial lead status, advisor assignment, and internal notes.
+  - Required-fields, source-handling, and post-creation guidance sidebar.
+  - Responsive Add student actions in the page header and mobile sticky action bar.
+  - Working cancel navigation back to Students / Leads.
+- Telegram leads remain system-created records with Telegram as their source; this page is for staff entry of leads acquired through other channels.
+- Add Student UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- The current Add Student submit behavior is development-only and returns to `/students` without persisting a lead.
 - `/students/:studentId` is protected and renders `src/pages/students/StudentDetailPage.tsx`.
 - The Students / Leads table `Open` action now links to the student detail route.
 - `StudentDetailPage` now renders inside `AppShell` as a CRM-style student record using API-shaped mock data:
@@ -216,6 +232,7 @@ Verification status:
 
 - `npx tsc --noEmit` passes after the reusable UI layer, dashboard shell, sidebar, topbar, mobile navigation, profile menu, and dashboard page changes.
 - `npx tsc --noEmit` passes after the Students / Leads page and `/students` route changes.
+- `npx tsc --noEmit` passes after the Add Student page and `/students/new` route changes.
 - `npx tsc --noEmit` passes after the Student Detail page and `/students/:studentId` route changes.
 - `npx tsc --noEmit` passes after the Schools page and `/schools` route changes.
 - `npx tsc --noEmit` passes after the Add School page and `/schools/new` route changes.
@@ -235,6 +252,7 @@ Known next steps:
 - Add authenticated user state and logout handling.
 - Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Students / Leads mock data with TanStack Query-backed API data when backend endpoints are ready.
+- Connect Add Student to `POST /api/students` and persist acquisition source metadata.
 - Replace Student Detail mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Schools mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Connect Add School to `POST /api/schools`.
@@ -245,6 +263,7 @@ Known next steps:
 - Replace Program Detail mock data with a TanStack Query-backed `GET /api/programs/:id` request.
 - Connect Edit Program to the program detail query and `PATCH /api/programs/:id`.
 - Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
+- Add form validation and API loading, success, and error states to Add Student.
 - Make Student Detail actions functional once advisor assignment, status update, notes, recommendations, and conversation endpoints are available.
 - Make Schools add, export, sorting, pagination, program navigation, edit, and status actions functional once backend endpoints are available.
 - Add form validation and API loading, success, and error states to Add School.
@@ -726,6 +745,8 @@ type Student = {
   fullName: string;
   email?: string;
   phone?: string;
+  source?: string;
+  sourceReference?: string;
   currentCountry?: string;
   destinationCountries: string[];
   preferredProgram?: string;
