@@ -1,7 +1,9 @@
 import { Bell, ChevronDown, LogOut, Menu, Plus, Search, Settings, UserRound } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import Button from '../ui/Button.js'
 import Input from '../ui/Input.js'
+import Modal from '../ui/Modal.js'
 import { cn } from '../../utils/cn.js'
 
 type TopbarProps = {
@@ -15,11 +17,20 @@ const currentUser = {
 }
 
 const Topbar = ({ onMenuClick }: TopbarProps) => {
+  const navigate = useNavigate()
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
+  const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false)
+
+  const signOut = () => {
+    localStorage.removeItem('token')
+    setIsSignOutModalOpen(false)
+    navigate('/login', { replace: true })
+  }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-[#E5E7EB] bg-white">
-      <div className="flex h-20 items-center gap-4 px-4 sm:px-6 lg:px-8">
+    <>
+      <header className="sticky top-0 z-20 border-b border-[#E5E7EB] bg-white">
+        <div className="flex h-20 items-center gap-4 px-4 sm:px-6 lg:px-8">
         <button
           aria-label="Open navigation"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#E5E7EB] bg-white text-[#6B7280] outline-none transition hover:border-[#D1D5DB] hover:bg-[#F9FAFB] hover:text-[#111827] focus:ring-4 focus:ring-[#E6F4F3] lg:hidden"
@@ -110,6 +121,10 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
                 </Link>
                 <button
                   className="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-sm font-medium text-[#DC2626] transition hover:bg-[#FEE2E2]"
+                  onClick={() => {
+                    setIsProfileMenuOpen(false)
+                    setIsSignOutModalOpen(true)
+                  }}
                   role="menuitem"
                   type="button"
                 >
@@ -120,8 +135,38 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
             ) : null}
           </div>
         </div>
-      </div>
-    </header>
+        </div>
+      </header>
+
+      <Modal
+        description="You will need to sign in again to access the staff workspace."
+        isOpen={isSignOutModalOpen}
+        onClose={() => setIsSignOutModalOpen(false)}
+        title="Sign out of your account?"
+      >
+        <div className="px-6 py-5">
+          <div className="flex items-start gap-3 rounded-xl border border-[#F7C9C5] bg-[#FEF3F2] p-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FEE2E2] text-[#B42318]">
+              <LogOut size={17} />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-[#111827]">{currentUser.name}</p>
+              <p className="mt-1 text-sm leading-5 text-[#6B7280]">
+                Your current session on this device will end.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col-reverse gap-3 border-t border-[#E5E7EB] px-6 py-4 sm:flex-row sm:justify-end">
+          <Button onClick={() => setIsSignOutModalOpen(false)} size="md" variant="secondary">
+            Cancel
+          </Button>
+          <Button leftIcon={<LogOut size={16} />} onClick={signOut} size="md" variant="danger">
+            Sign out
+          </Button>
+        </div>
+      </Modal>
+    </>
   )
 }
 

@@ -48,6 +48,14 @@ Implemented so far:
   - Navigation back to the read-only Profile page.
 - Role, permissions, and account status remain excluded from personal Account Settings and continue to be managed through Team.
 - Account Settings changes are local UI scaffolding until `PATCH /api/auth/me`, `POST /api/auth/change-password`, and session-management endpoints are connected.
+- `src/components/ui/Modal.tsx` now provides the reusable modal foundation:
+  - Portal rendering above the application shell.
+  - Accessible dialog title and optional description.
+  - Escape-key and backdrop-click closing.
+  - Body-scroll locking while open.
+  - Standard close icon and restrained internal-dashboard styling.
+- The topbar Sign out action opens the first implemented confirmation modal.
+- Confirming sign out clears the development token, closes the modal, and redirects to `/login`; Cancel, Escape, backdrop click, and the close icon preserve the session.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -75,6 +83,7 @@ Implemented so far:
   - The topbar includes global search, an Add student quick action, notification button, staff profile control, and a mobile menu trigger.
   - The staff profile control is a profile/account menu, not a role selector.
   - The current profile menu uses mock authenticated-user data (`Amina Yusuf`, `Admin`) and includes View profile, Account settings, and Sign out menu actions.
+  - Sign out opens a focused confirmation modal before ending the current session.
   - View profile should navigate to the protected `/profile` page for the currently authenticated user's read-only identity, role, permissions, and account summary.
   - Account settings should navigate to the protected `/account-settings` page for the current user's own contact details, notification preferences, and password/security actions.
   - Topbar Account settings is personal to the signed-in user and is separate from the sidebar Settings page, which controls organization-wide operational values.
@@ -937,11 +946,12 @@ Use modals only for short, focused actions that do not justify a dedicated page.
 
 Core reusable modals:
 
-1. Assign or reassign advisor.
-2. Update workflow status.
-3. Confirm account access changes such as disable, activate, or cancel invitation.
-4. Confirm deletion of a removable record or setting value.
-5. Warn about unsaved form changes before navigation.
+1. Confirm sign out.
+2. Assign or reassign advisor.
+3. Update workflow status.
+4. Confirm account access changes such as disable, activate, or cancel invitation.
+5. Confirm deletion of a removable record or setting value.
+6. Warn about unsaved form changes before navigation.
 
 An optional quick follow-up or internal-note modal may be added when the workflow needs in-context entry.
 
