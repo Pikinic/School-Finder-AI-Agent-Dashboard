@@ -107,6 +107,13 @@ Implemented so far:
 - Team directory account actions now open the confirmation modal and update rows, status filters, and summary counts locally after confirmation.
 - Team Member Detail uses the same confirmation modal, updates active or disabled status locally, and returns to Team after canceling a pending invitation.
 - Account-access changes remain local UI behavior until invitation cancellation and `PATCH /api/team/:userId/status` endpoints are connected.
+- `src/components/modals/DeleteConfirmationModal.tsx` provides a reusable destructive-action confirmation for removable records and controlled setting values:
+  - Receives the record type, display label, workflow consequence, and supporting description from the calling surface.
+  - Uses explicit destructive styling, permanent-removal language, and a clear non-destructive cancel action.
+  - Keeps dependency and historical-data warnings visible before confirmation.
+- Settings delete actions now open the confirmation modal instead of removing values immediately.
+- Confirmed setting-value deletion updates the active category locally; Cancel, Escape, backdrop click, and the close icon preserve the value.
+- Setting-value deletion remains local UI behavior until Settings persistence and backend dependency validation are connected.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -525,12 +532,12 @@ The primary page inventory is complete. Remaining frontend UI work should be com
 
 ### 2. Remaining Modals
 
-The reusable `Modal` foundation, Sign out confirmation, advisor assignment modal, workflow-status modal, and account-access confirmation modal are implemented. Still required:
+The reusable `Modal` foundation, Sign out confirmation, advisor assignment modal, workflow-status modal, account-access confirmation modal, and delete confirmation modal are implemented. Still required:
 
 - Completed: Assign or reassign advisor modal.
 - Completed: Update workflow status modal.
 - Completed: Account access confirmation modal for activate, disable, or cancel invitation.
-- Delete confirmation modal for removable records and setting values.
+- Completed: Delete confirmation modal for removable records and setting values.
 - Unsaved changes confirmation modal for forms.
 - Optional quick follow-up or internal-note modal when in-context entry is preferred.
 
@@ -1156,6 +1163,7 @@ school-finder-frontend/
       modals/
         AccountAccessConfirmationModal.tsx
         AssignAdvisorModal.tsx
+        DeleteConfirmationModal.tsx
         UpdateWorkflowStatusModal.tsx
       ui/
         Button.tsx
