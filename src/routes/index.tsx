@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
+import AdvisorsPage from '../pages/advisors/AdvisorsPage.js'
 import LoginPage from '../pages/auth/LoginPage.js'
 import ConversationDetailPage from '../pages/conversations/ConversationDetailPage.js'
 import ConversationsPage from '../pages/conversations/ConversationsPage.js'
@@ -46,6 +47,7 @@ const AppRoutes = () => {
         <Route path='/team/invite' element={<ProtectedRoute><InviteTeamMemberPage /></ProtectedRoute>} />
         <Route path='/team/:memberId/edit' element={<ProtectedRoute><EditTeamMemberPage /></ProtectedRoute>} />
         <Route path='/team/:memberId' element={<ProtectedRoute><TeamMemberDetailPage /></ProtectedRoute>} />
+        <Route path='/advisors' element={<ProtectedRoute><AdvisorsPage /></ProtectedRoute>} />
     </Routes>
   )
 }

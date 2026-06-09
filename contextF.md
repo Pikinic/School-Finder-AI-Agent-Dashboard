@@ -298,6 +298,18 @@ Implemented so far:
   - No password or account-status fields; passwords remain private and access status stays a separate explicit action.
   - Cancel and development-only save behavior returning to the member detail page.
 - Team Detail `Edit account` and `Edit permissions` actions, plus the Team row menu, now navigate to the shared account edit page.
+- `/advisors` is protected and renders `src/pages/advisors/AdvisorsPage.tsx`.
+- `AdvisorsPage` is the advisor-operations surface and remains separate from Team account management:
+  - Summary cards for active advisors, assigned students, available capacity, and follow-ups due.
+  - Working search by advisor name, email, or specialization.
+  - Working availability and workload filters.
+  - Advisor table with availability, student capacity, workload state, specializations, follow-ups, and last activity.
+  - Visual workload progress indicators for balanced, near-capacity, and over-capacity advisors.
+  - Follow-up review queue and capacity-attention summary.
+  - Navigation to Team for account management and Students for assignment review.
+  - Empty state with a working Clear filters action.
+  - Pagination controls and student-specific advisor navigation remain UI scaffolding.
+- Advisors UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
 - `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
 - The Programs page `Add program` action now links to the global program creation route.
 - `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
@@ -372,7 +384,8 @@ Known next steps:
 - Connect `EditTeamMemberPage` profile, role, and permission changes to `PATCH /api/team/:userId`.
 - Connect Team invitation resend/cancel and account activation/disable actions when backend endpoints are available.
 - Make Team pagination functional once API query parameters are available.
-- Add Advisors page at `src/pages/advisors/AdvisorsPage.tsx`.
+- Replace Advisors mock data with `GET /api/advisors` and connect availability/workload updates to `PATCH /api/advisors/:id`.
+- Add advisor-specific assignment filtering and detail navigation when the advisor API contract is ready.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
