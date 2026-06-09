@@ -1,16 +1,18 @@
 import { X } from 'lucide-react'
 import { useEffect, useId, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { cn } from '../../utils/cn.js'
 
 type ModalProps = {
   children: ReactNode
   description?: string
   isOpen: boolean
   onClose: () => void
+  size?: 'md' | 'lg'
   title: string
 }
 
-const Modal = ({ children, description, isOpen, onClose, title }: ModalProps) => {
+const Modal = ({ children, description, isOpen, onClose, size = 'md', title }: ModalProps) => {
   const titleId = useId()
   const descriptionId = useId()
 
@@ -49,7 +51,12 @@ const Modal = ({ children, description, isOpen, onClose, title }: ModalProps) =>
       }}
       role="dialog"
     >
-      <div className="w-full max-w-md rounded-[20px] border border-[#E5E7EB] bg-white shadow-[0_24px_70px_rgba(17,24,39,0.22)]">
+      <div
+        className={cn(
+          'w-full rounded-[20px] border border-[#E5E7EB] bg-white shadow-[0_24px_70px_rgba(17,24,39,0.22)]',
+          size === 'lg' ? 'max-w-2xl' : 'max-w-md',
+        )}
+      >
         <div className="flex items-start justify-between gap-4 border-b border-[#E5E7EB] px-6 py-5">
           <div>
             <h2 className="text-lg font-semibold text-[#111827]" id={titleId}>

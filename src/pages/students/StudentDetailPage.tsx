@@ -15,7 +15,9 @@ import {
   Sparkles,
   UserRoundCheck,
 } from 'lucide-react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import AssignAdvisorModal from '../../components/modals/AssignAdvisorModal.js'
 import AppShell from '../../components/layout/AppShell.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
@@ -135,13 +137,6 @@ const studentDetail: StudentDetail = {
   status: 'Assigned',
 }
 
-const profileItems = [
-  { label: 'Email', value: studentDetail.email, icon: Mail },
-  { label: 'Phone', value: studentDetail.phone, icon: Phone },
-  { label: 'Student ID', value: studentDetail.id, icon: ClipboardList },
-  { label: 'Advisor', value: studentDetail.advisor, icon: UserRoundCheck },
-] as const
-
 const statusSteps = [
   { label: 'Lead captured', state: 'Done', tone: 'success' },
   { label: 'Advisor assigned', state: 'Done', tone: 'success' },
@@ -158,6 +153,14 @@ const toneByStep: Record<(typeof statusSteps)[number]['tone'], BadgeTone> = {
 const StudentDetailPage = () => {
   const { studentId } = useParams()
   const displayId = studentId ?? studentDetail.id
+  const [assignedAdvisor, setAssignedAdvisor] = useState(studentDetail.advisor)
+  const [isAdvisorModalOpen, setIsAdvisorModalOpen] = useState(false)
+  const profileItems = [
+    { label: 'Email', value: studentDetail.email, icon: Mail },
+    { label: 'Phone', value: studentDetail.phone, icon: Phone },
+    { label: 'Student ID', value: displayId, icon: ClipboardList },
+    { label: 'Advisor', value: assignedAdvisor, icon: UserRoundCheck },
+  ] as const
 
   return (
     <AppShell>
@@ -184,7 +187,12 @@ const StudentDetailPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button leftIcon={<UserRoundCheck size={17} />} size="md" variant="secondary">
+            <Button
+              leftIcon={<UserRoundCheck size={17} />}
+              onClick={() => setIsAdvisorModalOpen(true)}
+              size="md"
+              variant="secondary"
+            >
               Assign advisor
             </Button>
             <Button leftIcon={<RefreshCw size={17} />} size="md">
@@ -440,6 +448,17 @@ const StudentDetailPage = () => {
           </div>
         </Card>
       </div>
+
+      <AssignAdvisorModal
+        currentAdvisor={assignedAdvisor}
+        isOpen={isAdvisorModalOpen}
+        onAssign={(advisor) => {
+          setAssignedAdvisor(advisor.name)
+          setIsAdvisorModalOpen(false)
+        }}
+        onClose={() => setIsAdvisorModalOpen(false)}
+        studentName={studentDetail.fullName}
+      />
     </AppShell>
   )
 }

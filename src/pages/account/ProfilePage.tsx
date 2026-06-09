@@ -1,19 +1,45 @@
 import {
+  BriefcaseBusiness,
   CalendarClock,
   CheckCircle2,
   Clock3,
+  Gauge,
   KeyRound,
   Mail,
   Phone,
   ShieldCheck,
   UserRound,
+  Users,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
 import Badge from '../../components/ui/Badge.js'
 import Card from '../../components/ui/Card.js'
 
-const currentUser = {
+type AdvisorProfile = {
+  activeStudents: number
+  availability: 'Available' | 'Limited' | 'Unavailable'
+  capacity: number
+  followUpsDue: number
+  specializations: string[]
+}
+
+type CurrentUser = {
+  accountCreated: string
+  advisorProfile?: AdvisorProfile
+  email: string
+  fullName: string
+  id: string
+  lastLogin: string
+  lastUpdated: string
+  permissions: string[]
+  phone: string
+  role: 'Admin' | 'Advisor' | 'Operations'
+  status: 'Active' | 'Disabled' | 'Invited'
+}
+
+const currentUser: CurrentUser = {
   accountCreated: 'January 12, 2025',
   email: 'amina@pikinic.example',
   fullName: 'Amina Yusuf',
@@ -62,6 +88,10 @@ const ProfilePage = () => {
 
         <div className="grid gap-6 xl:grid-cols-[0.78fr_1.22fr]">
           <div className="space-y-6">
+            {currentUser.role === 'Advisor' && currentUser.advisorProfile ? (
+              <AdvisorProfileSummary profile={currentUser.advisorProfile} />
+            ) : null}
+
             <Card>
               <div className="flex items-start gap-4">
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[20px] bg-[#E6F4F3] text-xl font-semibold text-[#045A58]">
@@ -212,6 +242,119 @@ const DetailRow = ({ label, value }: { label: string; value: string }) => (
   <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
     <dt className="text-sm text-[#6B7280]">{label}</dt>
     <dd className="text-sm font-semibold text-[#111827] sm:text-right">{value}</dd>
+  </div>
+)
+
+const AdvisorProfileSummary = ({ profile }: { profile: AdvisorProfile }) => {
+  const workloadPercentage = Math.min(Math.round((profile.activeStudents / profile.capacity) * 100), 100)
+  const workloadLabel =
+    profile.activeStudents > profile.capacity
+      ? 'Over capacity'
+      : workloadPercentage >= 85
+        ? 'Near capacity'
+        : 'Balanced'
+  const workloadTone =
+    workloadLabel === 'Over capacity' ? 'error' : workloadLabel === 'Near capacity' ? 'warning' : 'success'
+  const availabilityTone =
+    profile.availability === 'Available'
+      ? 'success'
+      : profile.availability === 'Limited'
+        ? 'warning'
+        : 'error'
+
+  return (
+    <Card>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#E6F4F3] text-[#045A58]">
+            <BriefcaseBusiness size={19} />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-[#111827]">Advisor profile</h2>
+            <p className="mt-1 text-sm leading-6 text-[#6B7280]">
+              Your current student workload, availability, and advisory focus.
+            </p>
+          </div>
+        </div>
+        <Badge tone={availabilityTone}>{profile.availability}</Badge>
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <AdvisorMetric
+          icon={<Users size={17} />}
+          label="Assigned students"
+          value={`${profile.activeStudents} active`}
+        />
+        <AdvisorMetric
+          icon={<Gauge size={17} />}
+          label="Capacity"
+          value={`${profile.activeStudents} / ${profile.capacity}`}
+        />
+        <AdvisorMetric
+          icon={<CalendarClock size={17} />}
+          label="Follow-ups"
+          value={`${profile.followUpsDue} due`}
+        />
+      </div>
+
+      <div className="mt-5 rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-[#111827]">Workload</p>
+            <p className="mt-1 text-xs text-[#6B7280]">{workloadPercentage}% of assignment capacity</p>
+          </div>
+          <Badge tone={workloadTone}>{workloadLabel}</Badge>
+        </div>
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#E5E7EB]">
+          <div
+            className={`h-full rounded-full ${
+              workloadLabel === 'Over capacity'
+                ? 'bg-[#DC2626]'
+                : workloadLabel === 'Near capacity'
+                  ? 'bg-[#D97706]'
+                  : 'bg-[#045A58]'
+            }`}
+            style={{ width: `${workloadPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <p className="text-xs font-semibold uppercase tracking-normal text-[#9CA3AF]">Specializations</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {profile.specializations.map((specialization) => (
+            <Badge key={specialization} tone="neutral">
+              {specialization}
+            </Badge>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-col gap-3 border-t border-[#E5E7EB] pt-5 sm:flex-row">
+        <Link
+          className="inline-flex h-10 items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] outline-none transition hover:bg-[#F9FAFB] focus:ring-4 focus:ring-[#E6F4F3]"
+          to="/students"
+        >
+          View assigned students
+        </Link>
+        <Link
+          className="inline-flex h-10 items-center justify-center rounded-xl border border-transparent bg-[#045A58] px-4 text-sm font-semibold text-white outline-none transition hover:bg-[#034A48] focus:ring-4 focus:ring-[#E6F4F3]"
+          to="/advisors"
+        >
+          Review advisor workload
+        </Link>
+      </div>
+    </Card>
+  )
+}
+
+const AdvisorMetric = ({ icon, label, value }: { icon: ReactNode; label: string; value: string }) => (
+  <div className="rounded-xl border border-[#E5E7EB] p-4">
+    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#E6F4F3] text-[#045A58]">
+      {icon}
+    </div>
+    <p className="mt-3 text-xs font-semibold uppercase tracking-normal text-[#9CA3AF]">{label}</p>
+    <p className="mt-1 text-sm font-semibold text-[#111827]">{value}</p>
   </div>
 )
 

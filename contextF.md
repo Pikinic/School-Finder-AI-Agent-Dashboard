@@ -53,7 +53,14 @@ Implemented so far:
   - Last login, account creation date, and profile-update timestamp.
   - Assigned permissions and recent personal account activity.
   - Clear guidance that role, permissions, and status are administered through Team, while personal preferences and password changes belong in Account settings.
-- The current mock user is an Admin. Advisor-specific profile information should render conditionally when the authenticated API user has the Advisor role.
+- Profile now includes a role-gated Advisor summary that renders only when the authenticated user has the Advisor role and an advisor profile:
+  - Availability status.
+  - Active student assignments and capacity.
+  - Workload percentage and balanced, near-capacity, or over-capacity state.
+  - Follow-ups due.
+  - Advisor specializations.
+  - Navigation to Students and the Advisors workload page.
+- The current mock user is an Admin, so advisor workload information remains hidden in the default development view.
 - Profile data remains UI scaffolding until `GET /api/auth/me` is connected to shared authentication state.
 - `/account-settings` is protected and renders `src/pages/account/AccountSettingsPage.tsx`.
 - The topbar `Account settings` menu action now navigates to `/account-settings` and closes the profile menu.
@@ -73,8 +80,17 @@ Implemented so far:
   - Escape-key and backdrop-click closing.
   - Body-scroll locking while open.
   - Standard close icon and restrained internal-dashboard styling.
+  - Medium and large dialog widths for confirmation and operational selection workflows.
 - The topbar Sign out action opens the first implemented confirmation modal.
 - Confirming sign out clears the development token, closes the modal, and redirects to `/login`; Cancel, Escape, backdrop click, and the close icon preserve the session.
+- `src/components/modals/AssignAdvisorModal.tsx` provides the reusable assign/reassign workflow:
+  - Advisor search by name or specialization.
+  - Availability, workload, capacity, specialization, and current-assignment context.
+  - Available, limited, unavailable, current, and capacity states.
+  - Unavailable or full advisors are blocked from receiving new assignments.
+  - Empty search state, Cancel action, and assignment-change validation.
+- Student Detail `Assign advisor` now opens the modal and updates the displayed advisor locally after confirmation.
+- Advisor assignment remains local UI behavior until the student assignment API is connected.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -489,13 +505,13 @@ The primary page inventory is complete. Remaining frontend UI work should be com
 - Completed: reset-password token page as a separate workflow from invitation password setup.
 - Completed: responsive notifications panel for the topbar notification button.
 - Completed: adaptive Not Found page and wildcard route.
-- Add the advisor-specific Profile summary that renders conditionally when the authenticated user has the Advisor role.
+- Completed: advisor-specific Profile summary with role-conditional rendering.
 
 ### 2. Remaining Modals
 
-The reusable `Modal` foundation and Sign out confirmation are implemented. Still required:
+The reusable `Modal` foundation, Sign out confirmation, and advisor assignment modal are implemented. Still required:
 
-- Assign or reassign advisor modal.
+- Completed: Assign or reassign advisor modal.
 - Update workflow status modal.
 - Account access confirmation modal for activate, disable, or cancel invitation.
 - Delete confirmation modal for removable records and setting values.
@@ -506,7 +522,7 @@ The reusable `Modal` foundation and Sign out confirmation are implemented. Still
 
 Student workflows:
 
-- Assign advisor.
+- Completed locally: Assign or reassign advisor.
 - Update student or application status.
 - Refresh recommendations.
 - Add internal notes.
@@ -1121,6 +1137,8 @@ school-finder-frontend/
         AppShell.tsx
         Sidebar.tsx
         Topbar.tsx
+      modals/
+        AssignAdvisorModal.tsx
       ui/
         Button.tsx
         Input.tsx
