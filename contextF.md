@@ -289,6 +289,15 @@ Implemented so far:
   - Clear password-security guidance without exposing or collecting another user's password.
 - Team row actions now navigate to the member detail page and its role-and-permissions section.
 - Team member detail actions are UI scaffolding until `GET /api/team/:userId`, `PATCH /api/team/:userId`, and `PATCH /api/team/:userId/status` are connected.
+- `/team/:memberId/edit` is protected and renders `src/pages/team/EditTeamMemberPage.tsx`.
+- `EditTeamMemberPage` provides:
+  - Prefilled full name, work email, and optional phone fields.
+  - Role selection for Admin, Advisor, and Operations accounts.
+  - Role-aware permission checkboxes with a live selected-permission summary.
+  - Read-only account status, user ID, current role, and last-login context.
+  - No password or account-status fields; passwords remain private and access status stays a separate explicit action.
+  - Cancel and development-only save behavior returning to the member detail page.
+- Team Detail `Edit account` and `Edit permissions` actions, plus the Team row menu, now navigate to the shared account edit page.
 - `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
 - The Programs page `Add program` action now links to the global program creation route.
 - `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
@@ -360,7 +369,7 @@ Known next steps:
 - Make Recommendations shortlist, comparison persistence, sorting, and pagination functional once backend endpoints are available.
 - Connect `InviteTeamMemberPage` to `POST /api/team/invitations` with validation, loading, success, and error states.
 - Connect `TeamMemberDetailPage` to `GET /api/team/:userId`.
-- Add the Team account edit workflow for profile, role, and permissions using `PATCH /api/team/:userId`.
+- Connect `EditTeamMemberPage` profile, role, and permission changes to `PATCH /api/team/:userId`.
 - Connect Team invitation resend/cancel and account activation/disable actions when backend endpoints are available.
 - Make Team pagination functional once API query parameters are available.
 - Add Advisors page at `src/pages/advisors/AdvisorsPage.tsx`.
@@ -851,6 +860,7 @@ school-finder-frontend/
         TeamPage.tsx
         InviteTeamMemberPage.tsx
         TeamMemberDetailPage.tsx
+        EditTeamMemberPage.tsx
       advisors/
         AdvisorsPage.tsx
       settings/

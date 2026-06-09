@@ -318,7 +318,7 @@ const TeamPage = () => {
                               <TeamMenuAction
                                 icon={<KeyRound size={16} />}
                                 label="Edit role & permissions"
-                                onClick={() => navigate(`/team/${member.id}#access`)}
+                                onClick={() => navigate(`/team/${member.id}/edit`)}
                               />
 
                               <div className="my-1.5 border-t border-[#E5E7EB]" />

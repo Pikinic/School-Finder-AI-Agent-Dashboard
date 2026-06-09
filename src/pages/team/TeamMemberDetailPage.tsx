@@ -14,7 +14,7 @@ import {
   UserRound,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
@@ -175,6 +175,7 @@ const roleTone: Record<TeamRole, 'brand' | 'neutral' | 'success'> = {
 }
 
 const TeamMemberDetailPage = () => {
+  const navigate = useNavigate()
   const { memberId } = useParams()
   const member = (memberId && members[memberId]) || fallbackMember
   const displayId = memberId ?? member.id
@@ -203,7 +204,12 @@ const TeamMemberDetailPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button leftIcon={<Pencil size={17} />} size="md" variant="secondary">
+            <Button
+              leftIcon={<Pencil size={17} />}
+              onClick={() => navigate(`/team/${displayId}/edit`)}
+              size="md"
+              variant="secondary"
+            >
               Edit account
             </Button>
             {member.status === 'Invited' ? (
@@ -287,7 +293,12 @@ const TeamMemberDetailPage = () => {
                     </p>
                   </div>
                 </div>
-                <Button leftIcon={<Pencil size={16} />} size="sm" variant="secondary">
+                <Button
+                  leftIcon={<Pencil size={16} />}
+                  onClick={() => navigate(`/team/${displayId}/edit`)}
+                  size="sm"
+                  variant="secondary"
+                >
                   Edit permissions
                 </Button>
               </div>
