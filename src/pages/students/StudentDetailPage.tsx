@@ -12,12 +12,16 @@ import {
   RefreshCw,
   School,
   Send,
+  SlidersHorizontal,
   Sparkles,
   UserRoundCheck,
 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import AssignAdvisorModal from '../../components/modals/AssignAdvisorModal.js'
+import UpdateWorkflowStatusModal, {
+  type WorkflowStatusOption,
+} from '../../components/modals/UpdateWorkflowStatusModal.js'
 import AppShell from '../../components/layout/AppShell.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
@@ -150,11 +154,50 @@ const toneByStep: Record<(typeof statusSteps)[number]['tone'], BadgeTone> = {
   success: 'success',
 }
 
+const studentStatusOptions: WorkflowStatusOption[] = [
+  {
+    description: 'The lead has been captured and still requires initial operational review.',
+    label: 'New',
+    tone: 'brand',
+  },
+  {
+    description: 'The lead is ready but has not yet been assigned to an advisor.',
+    label: 'Awaiting assignment',
+    tone: 'warning',
+  },
+  {
+    description: 'An advisor owns the student workflow and active follow-up.',
+    label: 'Assigned',
+    tone: 'success',
+  },
+  {
+    description: 'The student requires a scheduled or active follow-up from the advisor.',
+    label: 'Follow-up',
+    tone: 'warning',
+  },
+  {
+    description: 'The student has moved into an active school application workflow.',
+    label: 'Application started',
+    tone: 'brand',
+  },
+  {
+    description: 'The placement workflow is complete and no further operational action is pending.',
+    label: 'Completed',
+    tone: 'neutral',
+  },
+]
+
+const studentStatusTone: Record<string, BadgeTone> = Object.fromEntries(
+  studentStatusOptions.map((option) => [option.label, option.tone]),
+)
+
 const StudentDetailPage = () => {
   const { studentId } = useParams()
   const displayId = studentId ?? studentDetail.id
   const [assignedAdvisor, setAssignedAdvisor] = useState(studentDetail.advisor)
   const [isAdvisorModalOpen, setIsAdvisorModalOpen] = useState(false)
+  const [studentStatus, setStudentStatus] = useState(studentDetail.status)
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false)
   const profileItems = [
     { label: 'Email', value: studentDetail.email, icon: Mail },
     { label: 'Phone', value: studentDetail.phone, icon: Phone },
@@ -178,7 +221,7 @@ const StudentDetailPage = () => {
               <h1 className="text-3xl font-semibold tracking-normal text-[#111827]">
                 {studentDetail.fullName}
               </h1>
-              <Badge tone="brand">{studentDetail.status}</Badge>
+              <Badge tone={studentStatusTone[studentStatus] ?? 'neutral'}>{studentStatus}</Badge>
               <Badge tone="neutral">{displayId}</Badge>
             </div>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-[#6B7280]">
@@ -238,12 +281,22 @@ const StudentDetailPage = () => {
             </Card>
 
             <Card>
-              <div className="mb-5 flex items-center justify-between gap-3">
+              <div className="mb-5 flex items-start justify-between gap-3">
                 <div>
                   <h2 className="text-lg font-semibold text-[#111827]">Application status</h2>
-                  <p className="mt-1 text-sm text-[#6B7280]">{studentDetail.applicationStage}</p>
+                  <p className="mt-1 text-sm text-[#6B7280]">
+                    {studentDetail.applicationStage} / {studentStatus}
+                  </p>
                 </div>
-                <CalendarClock className="text-[#045A58]" size={20} />
+                <button
+                  aria-label="Update student workflow status"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-[#045A58] outline-none transition hover:bg-[#E6F4F3] focus:ring-4 focus:ring-[#E6F4F3]"
+                  onClick={() => setIsStatusModalOpen(true)}
+                  title="Update status"
+                  type="button"
+                >
+                  <SlidersHorizontal size={18} />
+                </button>
               </div>
 
               <div className="space-y-3">
@@ -458,6 +511,18 @@ const StudentDetailPage = () => {
         }}
         onClose={() => setIsAdvisorModalOpen(false)}
         studentName={studentDetail.fullName}
+      />
+      <UpdateWorkflowStatusModal
+        currentStatus={studentStatus}
+        entityName={studentDetail.fullName}
+        isOpen={isStatusModalOpen}
+        onClose={() => setIsStatusModalOpen(false)}
+        onUpdate={(status) => {
+          setStudentStatus(status.label)
+          setIsStatusModalOpen(false)
+        }}
+        options={studentStatusOptions}
+        workflowLabel="Student workflow"
       />
     </AppShell>
   )

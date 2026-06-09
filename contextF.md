@@ -91,6 +91,14 @@ Implemented so far:
   - Empty search state, Cancel action, and assignment-change validation.
 - Student Detail `Assign advisor` now opens the modal and updates the displayed advisor locally after confirmation.
 - Advisor assignment remains local UI behavior until the student assignment API is connected.
+- `src/components/modals/UpdateWorkflowStatusModal.tsx` provides the reusable workflow-status action:
+  - Receives workflow-specific status options so the same modal can support students and other operational records.
+  - Shows the current status and clearly distinguishes it from the selected replacement.
+  - Requires an actual status change before submission.
+  - Supports an optional internal note for audit and handoff context.
+  - Includes responsive scrolling, Cancel, Escape, backdrop-close, and selection feedback.
+- Student Detail now exposes the status action from the Application status section and updates the visible student status locally after confirmation.
+- Workflow-status changes and notes remain local UI behavior until the status-history API is connected.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -509,10 +517,10 @@ The primary page inventory is complete. Remaining frontend UI work should be com
 
 ### 2. Remaining Modals
 
-The reusable `Modal` foundation, Sign out confirmation, and advisor assignment modal are implemented. Still required:
+The reusable `Modal` foundation, Sign out confirmation, advisor assignment modal, and workflow-status modal are implemented. Still required:
 
 - Completed: Assign or reassign advisor modal.
-- Update workflow status modal.
+- Completed: Update workflow status modal.
 - Account access confirmation modal for activate, disable, or cancel invitation.
 - Delete confirmation modal for removable records and setting values.
 - Unsaved changes confirmation modal for forms.
@@ -523,7 +531,7 @@ The reusable `Modal` foundation, Sign out confirmation, and advisor assignment m
 Student workflows:
 
 - Completed locally: Assign or reassign advisor.
-- Update student or application status.
+- Completed locally: Update student workflow status.
 - Refresh recommendations.
 - Add internal notes.
 - Mark or schedule follow-up.
@@ -1139,6 +1147,7 @@ school-finder-frontend/
         Topbar.tsx
       modals/
         AssignAdvisorModal.tsx
+        UpdateWorkflowStatusModal.tsx
       ui/
         Button.tsx
         Input.tsx
