@@ -2,7 +2,9 @@ import { Route, Routes } from 'react-router-dom'
 import AccountSettingsPage from '../pages/account/AccountSettingsPage.js'
 import ProfilePage from '../pages/account/ProfilePage.js'
 import AdvisorsPage from '../pages/advisors/AdvisorsPage.js'
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.js'
 import LoginPage from '../pages/auth/LoginPage.js'
+import ResetPasswordPage from '../pages/auth/ResetPasswordPage.js'
 import SetPasswordPage from '../pages/auth/SetPasswordPage.js'
 import ConversationDetailPage from '../pages/conversations/ConversationDetailPage.js'
 import ConversationsPage from '../pages/conversations/ConversationsPage.js'
@@ -31,6 +33,8 @@ const AppRoutes = () => {
   return (
     <Routes>
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/forgot-password' element={<ForgotPasswordPage />} />
+        <Route path='/reset-password/:token' element={<ResetPasswordPage />} />
         <Route path='/set-password/:token' element={<SetPasswordPage />} />
         <Route path='/profile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path='/account-settings' element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />

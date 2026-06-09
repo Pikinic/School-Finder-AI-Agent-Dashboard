@@ -27,6 +27,25 @@ Implemented so far:
   - Clear guidance that administrators cannot create or view another user's password.
 - Ordinary token values render the valid development flow; `invalid`, `expired`, and `used` can be used to preview failure states.
 - The current Set Password submission is local UI scaffolding until invitation validation and acceptance APIs are connected.
+- `/forgot-password` is public and renders `src/pages/auth/ForgotPasswordPage.tsx`.
+- The Login `Forgot password?` action now navigates to the recovery request page.
+- `ForgotPasswordPage` provides:
+  - Required company-email entry.
+  - Development-only submitting state.
+  - A security-safe generic success response that does not reveal whether the account exists.
+  - Reset-link timing and spam-folder guidance.
+  - Return-to-login and use-a-different-email actions.
+- Forgot-password submission is local UI scaffolding until `POST /api/auth/forgot-password` is connected.
+- `/reset-password/:token` is public and renders `src/pages/auth/ResetPasswordPage.tsx`.
+- `ResetPasswordPage` provides the second step of forgotten-password recovery:
+  - Development token validation with loading, valid, invalid, expired, and already-used states.
+  - New-password and confirmation fields with independent visibility controls.
+  - Live minimum-length, uppercase, lowercase, numeric, and password-match validation.
+  - Processing and success states with navigation to Login.
+  - Invalid-token actions to request a new reset link or return to Login.
+  - Recovery-specific messaging that replaces the existing password without changing role, permissions, or account status.
+- Ordinary token values render the valid development flow; `invalid`, `expired`, and `used` preview reset-link failure states.
+- Reset-password submission remains local UI scaffolding until reset-token validation and password replacement APIs are connected.
 - `/profile` is protected and renders `src/pages/account/ProfilePage.tsx`.
 - The topbar `View profile` menu action now navigates to `/profile` and closes the profile menu.
 - `ProfilePage` provides a read-only current-user view using mock authenticated-user data:
@@ -450,6 +469,118 @@ Known next steps:
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
+
+## Remaining UI Completion Checklist
+
+The primary page inventory is complete. Remaining frontend UI work should be completed in the following order.
+
+### 1. Missing Screens and Surfaces
+
+- Completed: forgot-password request page and Login navigation.
+- Completed: reset-password token page as a separate workflow from invitation password setup.
+- Add a notifications panel or page for the topbar notification button.
+- Add a Not Found page and wildcard route.
+- Add the advisor-specific Profile summary that renders conditionally when the authenticated user has the Advisor role.
+
+### 2. Remaining Modals
+
+The reusable `Modal` foundation and Sign out confirmation are implemented. Still required:
+
+- Assign or reassign advisor modal.
+- Update workflow status modal.
+- Account access confirmation modal for activate, disable, or cancel invitation.
+- Delete confirmation modal for removable records and setting values.
+- Unsaved changes confirmation modal for forms.
+- Optional quick follow-up or internal-note modal when in-context entry is preferred.
+
+### 3. Visible Actions That Still Need UI Behavior
+
+Student workflows:
+
+- Assign advisor.
+- Update student or application status.
+- Refresh recommendations.
+- Add internal notes.
+- Mark or schedule follow-up.
+- Open the related conversation from Student Detail.
+
+Conversation workflows:
+
+- Send advisor reply.
+- Assign or reassign advisor.
+- Escalate conversation.
+- Mark conversation resolved.
+- Functional sorting and pagination.
+
+School and program workflows:
+
+- Update school status.
+- Update program status.
+- Export school directory.
+- Functional sorting and pagination.
+
+Team workflows:
+
+- Resend invitation.
+- Cancel invitation.
+- Activate or disable account.
+- Functional pagination.
+
+Advisor workflows:
+
+- Open Students with an advisor-specific assignment filter.
+- Review advisor follow-ups in the correct filtered workflow.
+- Functional pagination.
+
+Settings and personal account workflows:
+
+- Save operational Settings changes.
+- Save personal profile changes.
+- Save notification preferences.
+- Show password-change success and failure feedback.
+- Sign out other sessions.
+
+Dashboard and global workflows:
+
+- Export report.
+- Review leads with the intended filtered Students view.
+- Implement global search behavior.
+- Implement the notifications surface.
+
+### 4. Shared UI Components Still Needed
+
+The current pages contain several locally implemented patterns. Extract reusable components where they remove meaningful duplication:
+
+- `Select`.
+- `Textarea`.
+- `Table`.
+- `Tabs`.
+- `EmptyState`.
+- `LoadingState`.
+- Error state or error notice.
+- Confirmation modal content pattern.
+
+Do not refactor existing pages only for abstraction. Extract a shared component when implementing or revisiting a workflow that already repeats the pattern.
+
+### 5. Cross-Cutting UI States
+
+- Add loading states for page data, form submission, and destructive actions.
+- Add useful API error states and retry actions.
+- Add success feedback for saves and workflow actions.
+- Add disabled and processing states that prevent duplicate submissions.
+- Add empty states to any remaining filtered lists or activity sections.
+- Add unsaved-change protection to create and edit forms.
+
+### 6. Final UI Quality Pass
+
+- Test all routes at desktop, tablet, and mobile widths.
+- Verify horizontal tables remain usable and action labels do not wrap incorrectly.
+- Verify dialogs support keyboard navigation, initial focus, focus trapping, focus return, Escape, and accessible labels.
+- Verify profile menus and row menus close on outside click, Escape, and navigation.
+- Verify all icon-only controls have accessible labels and useful tooltips.
+- Verify text does not overflow buttons, cards, tables, or narrow mobile layouts.
+- Add a wildcard route so invalid URLs do not render a blank page.
+- Introduce route-level code splitting to reduce the production bundle-size warning.
 
 ## Frontend Purpose
 
@@ -1095,6 +1226,9 @@ Example API routes the frontend may consume:
 ```text
 POST   /api/auth/login
 GET    /api/auth/me
+POST   /api/auth/forgot-password
+GET    /api/auth/reset-password/:token
+POST   /api/auth/reset-password/:token
 GET    /api/auth/invitations/:token
 POST   /api/auth/invitations/:token/accept
 PATCH  /api/auth/me

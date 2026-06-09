@@ -1,7 +1,7 @@
 import { ArrowRight, GraduationCap, LockKeyhole, Mail } from 'lucide-react'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Button from '../../components/ui/Button.js'
 import Card from '../../components/ui/Card.js'
 import Input from '../../components/ui/Input.js'
@@ -54,9 +54,9 @@ const LoginPage = () => {
                   <label className="block text-sm font-medium text-[#111827]" htmlFor="password">
                     Password
                   </label>
-                  <button className="text-sm font-medium text-[#045A58] hover:text-[#034A48]" type="button">
+                  <Link className="text-sm font-medium text-[#045A58] hover:text-[#034A48]" to="/forgot-password">
                     Forgot password?
-                  </button>
+                  </Link>
                 </div>
                 <Input
                   id="password"
