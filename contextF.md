@@ -279,6 +279,16 @@ Implemented so far:
   - No password input; the invited member sets their own password through the secure email link.
   - Desktop header actions and a responsive mobile action bar.
 - The invitation submission is UI scaffolding that returns to Team until `POST /api/team/invitations` is connected.
+- `/team/:memberId` is protected and renders `src/pages/team/TeamMemberDetailPage.tsx`.
+- `TeamMemberDetailPage` provides an account-focused view separate from advisor workload:
+  - Internal identity, work email, phone number, user ID, role, status, and last login.
+  - Invitation sender, sent date, acceptance state, account creation date, and last update.
+  - Role-based permission visibility for Admin, Advisor, and Operations accounts.
+  - Recent invitation, access, and authentication activity.
+  - Status-aware controls to resend an invitation, disable an active account, or activate a disabled account.
+  - Clear password-security guidance without exposing or collecting another user's password.
+- Team row actions now navigate to the member detail page and its role-and-permissions section.
+- Team member detail actions are UI scaffolding until `GET /api/team/:userId`, `PATCH /api/team/:userId`, and `PATCH /api/team/:userId/status` are connected.
 - `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
 - The Programs page `Add program` action now links to the global program creation route.
 - `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
@@ -349,7 +359,8 @@ Known next steps:
 - Make Conversation Detail reply, advisor assignment, escalation, and resolution actions functional once backend endpoints are available.
 - Make Recommendations shortlist, comparison persistence, sorting, and pagination functional once backend endpoints are available.
 - Connect `InviteTeamMemberPage` to `POST /api/team/invitations` with validation, loading, success, and error states.
-- Wire Team meatball-menu account actions to `src/pages/team/TeamMemberDetailPage.tsx`.
+- Connect `TeamMemberDetailPage` to `GET /api/team/:userId`.
+- Add the Team account edit workflow for profile, role, and permissions using `PATCH /api/team/:userId`.
 - Connect Team invitation resend/cancel and account activation/disable actions when backend endpoints are available.
 - Make Team pagination functional once API query parameters are available.
 - Add Advisors page at `src/pages/advisors/AdvisorsPage.tsx`.

@@ -17,6 +17,7 @@ import AddStudentPage from '../pages/students/AddStudentPage.js'
 import StudentDetailPage from '../pages/students/StudentDetailPage.js'
 import StudentsPage from '../pages/students/StudentsPage.js'
 import InviteTeamMemberPage from '../pages/team/InviteTeamMemberPage.js'
+import TeamMemberDetailPage from '../pages/team/TeamMemberDetailPage.js'
 import TeamPage from '../pages/team/TeamPage.js'
 import ProtectedRoute from './ProtectedRoute.js'
 
@@ -42,6 +43,7 @@ const AppRoutes = () => {
         <Route path='/schools/:schoolId' element={<ProtectedRoute><SchoolDetailPage /></ProtectedRoute>} />
         <Route path='/team' element={<ProtectedRoute><TeamPage /></ProtectedRoute>} />
         <Route path='/team/invite' element={<ProtectedRoute><InviteTeamMemberPage /></ProtectedRoute>} />
+        <Route path='/team/:memberId' element={<ProtectedRoute><TeamMemberDetailPage /></ProtectedRoute>} />
     </Routes>
   )
 }

@@ -310,10 +310,15 @@ const TeamPage = () => {
                               className="absolute right-0 top-11 z-30 w-64 overflow-hidden rounded-lg border border-[#E5E7EB] bg-white py-1.5 text-left shadow-[0_14px_36px_rgba(17,24,39,0.14)]"
                               role="menu"
                             >
-                              <TeamMenuAction icon={<Eye size={16} />} label="View account" />
+                              <TeamMenuAction
+                                icon={<Eye size={16} />}
+                                label="View account"
+                                onClick={() => navigate(`/team/${member.id}`)}
+                              />
                               <TeamMenuAction
                                 icon={<KeyRound size={16} />}
                                 label="Edit role & permissions"
+                                onClick={() => navigate(`/team/${member.id}#access`)}
                               />
 
                               <div className="my-1.5 border-t border-[#E5E7EB]" />
@@ -440,10 +445,12 @@ const TeamMenuAction = ({
   danger = false,
   icon,
   label,
+  onClick,
 }: {
   danger?: boolean
   icon: React.ReactNode
   label: string
+  onClick?: () => void
 }) => (
   <button
     className={`flex w-full items-center gap-3 px-3.5 py-2.5 text-sm font-medium outline-none transition focus:bg-[#F3F4F6] ${
@@ -451,6 +458,7 @@ const TeamMenuAction = ({
         ? 'text-[#B42318] hover:bg-[#FEF3F2]'
         : 'text-[#374151] hover:bg-[#F3F4F6] hover:text-[#111827]'
     }`}
+    onClick={onClick}
     role="menuitem"
     type="button"
   >
