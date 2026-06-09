@@ -103,7 +103,12 @@ Implemented so far:
   - The notification button opens a responsive operational notification panel.
   - The panel includes mock assignment, conversation, follow-up, and invitation notifications with timestamps and contextual navigation.
   - Notifications support local unread counts, individual read state, Mark all read, Clear notifications, and an empty state.
-  - The notification panel and profile menu are mutually exclusive and close on outside click, Escape, or navigation.
+- The notification panel and profile menu are mutually exclusive and close on outside click, Escape, or navigation.
+- A wildcard route now renders `src/pages/system/NotFoundPage.tsx` for unknown URLs.
+- `NotFoundPage` adapts to authentication state:
+  - Authenticated staff retain `AppShell`, see the requested path, and receive recovery links to Dashboard, Students, Schools, Programs, and Conversations.
+  - Signed-out visitors receive a restrained standalone Staff Portal view with Login navigation and no protected workspace links.
+  - Both variants provide a working browser-history Back action.
   - The staff profile control is a profile/account menu, not a role selector.
   - The current profile menu uses mock authenticated-user data (`Amina Yusuf`, `Admin`) and includes View profile, Account settings, and Sign out menu actions.
   - Sign out opens a focused confirmation modal before ending the current session.
@@ -483,7 +488,7 @@ The primary page inventory is complete. Remaining frontend UI work should be com
 - Completed: forgot-password request page and Login navigation.
 - Completed: reset-password token page as a separate workflow from invitation password setup.
 - Completed: responsive notifications panel for the topbar notification button.
-- Add a Not Found page and wildcard route.
+- Completed: adaptive Not Found page and wildcard route.
 - Add the advisor-specific Profile summary that renders conditionally when the authenticated user has the Advisor role.
 
 ### 2. Remaining Modals
@@ -583,7 +588,7 @@ Do not refactor existing pages only for abstraction. Extract a shared component 
 - Verify profile menus and row menus close on outside click, Escape, and navigation.
 - Verify all icon-only controls have accessible labels and useful tooltips.
 - Verify text does not overflow buttons, cards, tables, or narrow mobile layouts.
-- Add a wildcard route so invalid URLs do not render a blank page.
+- Completed: wildcard route prevents invalid URLs from rendering a blank page.
 - Introduce route-level code splitting to reduce the production bundle-size warning.
 
 ## Frontend Purpose
@@ -1169,6 +1174,8 @@ school-finder-frontend/
         AdvisorsPage.tsx
       settings/
         SettingsPage.tsx
+      system/
+        NotFoundPage.tsx
 
     routes/
       index.tsx

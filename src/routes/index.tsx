@@ -20,6 +20,7 @@ import EditSchoolPage from '../pages/schools/EditSchoolPage.js'
 import SchoolDetailPage from '../pages/schools/SchoolDetailPage.js'
 import SchoolsPage from '../pages/schools/SchoolsPage.js'
 import SettingsPage from '../pages/settings/SettingsPage.js'
+import NotFoundPage from '../pages/system/NotFoundPage.js'
 import AddStudentPage from '../pages/students/AddStudentPage.js'
 import StudentDetailPage from '../pages/students/StudentDetailPage.js'
 import StudentsPage from '../pages/students/StudentsPage.js'
@@ -60,6 +61,7 @@ const AppRoutes = () => {
         <Route path='/team/:memberId' element={<ProtectedRoute><TeamMemberDetailPage /></ProtectedRoute>} />
         <Route path='/advisors' element={<ProtectedRoute><AdvisorsPage /></ProtectedRoute>} />
         <Route path='/settings' element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+        <Route path='*' element={<NotFoundPage />} />
     </Routes>
   )
 }
