@@ -100,6 +100,10 @@ Implemented so far:
   - Mobile sidebar navigation is implemented as an off-canvas drawer with a backdrop, close button, and automatic close on navigation item selection.
   - `src/components/layout/Topbar.tsx` provides the dashboard topbar.
   - The topbar includes global search, an Add student quick action, notification button, staff profile control, and a mobile menu trigger.
+  - The notification button opens a responsive operational notification panel.
+  - The panel includes mock assignment, conversation, follow-up, and invitation notifications with timestamps and contextual navigation.
+  - Notifications support local unread counts, individual read state, Mark all read, Clear notifications, and an empty state.
+  - The notification panel and profile menu are mutually exclusive and close on outside click, Escape, or navigation.
   - The staff profile control is a profile/account menu, not a role selector.
   - The current profile menu uses mock authenticated-user data (`Amina Yusuf`, `Admin`) and includes View profile, Account settings, and Sign out menu actions.
   - Sign out opens a focused confirmation modal before ending the current session.
@@ -478,7 +482,7 @@ The primary page inventory is complete. Remaining frontend UI work should be com
 
 - Completed: forgot-password request page and Login navigation.
 - Completed: reset-password token page as a separate workflow from invitation password setup.
-- Add a notifications panel or page for the topbar notification button.
+- Completed: responsive notifications panel for the topbar notification button.
 - Add a Not Found page and wildcard route.
 - Add the advisor-specific Profile summary that renders conditionally when the authenticated user has the Advisor role.
 
@@ -545,7 +549,7 @@ Dashboard and global workflows:
 - Export report.
 - Review leads with the intended filtered Students view.
 - Implement global search behavior.
-- Implement the notifications surface.
+- Replace mock notifications with authenticated notification API data and persistence.
 
 ### 4. Shared UI Components Still Needed
 
