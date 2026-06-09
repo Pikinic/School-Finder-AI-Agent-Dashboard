@@ -99,6 +99,14 @@ Implemented so far:
   - Includes responsive scrolling, Cancel, Escape, backdrop-close, and selection feedback.
 - Student Detail now exposes the status action from the Application status section and updates the visible student status locally after confirmation.
 - Workflow-status changes and notes remain local UI behavior until the status-history API is connected.
+- `src/components/modals/AccountAccessConfirmationModal.tsx` provides one reusable confirmation workflow for:
+  - Activating a disabled account and restoring sign-in access.
+  - Disabling an active account while preserving its role, assignments, and activity history.
+  - Canceling a pending invitation, invalidating its setup link, and removing the pending account.
+  - Action-specific titles, consequences, icons, button labels, and danger treatment.
+- Team directory account actions now open the confirmation modal and update rows, status filters, and summary counts locally after confirmation.
+- Team Member Detail uses the same confirmation modal, updates active or disabled status locally, and returns to Team after canceling a pending invitation.
+- Account-access changes remain local UI behavior until invitation cancellation and `PATCH /api/team/:userId/status` endpoints are connected.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -517,11 +525,11 @@ The primary page inventory is complete. Remaining frontend UI work should be com
 
 ### 2. Remaining Modals
 
-The reusable `Modal` foundation, Sign out confirmation, advisor assignment modal, and workflow-status modal are implemented. Still required:
+The reusable `Modal` foundation, Sign out confirmation, advisor assignment modal, workflow-status modal, and account-access confirmation modal are implemented. Still required:
 
 - Completed: Assign or reassign advisor modal.
 - Completed: Update workflow status modal.
-- Account access confirmation modal for activate, disable, or cancel invitation.
+- Completed: Account access confirmation modal for activate, disable, or cancel invitation.
 - Delete confirmation modal for removable records and setting values.
 - Unsaved changes confirmation modal for forms.
 - Optional quick follow-up or internal-note modal when in-context entry is preferred.
@@ -555,8 +563,8 @@ School and program workflows:
 Team workflows:
 
 - Resend invitation.
-- Cancel invitation.
-- Activate or disable account.
+- Completed locally: Cancel invitation.
+- Completed locally: Activate or disable account.
 - Functional pagination.
 
 Advisor workflows:
@@ -1146,6 +1154,7 @@ school-finder-frontend/
         Sidebar.tsx
         Topbar.tsx
       modals/
+        AccountAccessConfirmationModal.tsx
         AssignAdvisorModal.tsx
         UpdateWorkflowStatusModal.tsx
       ui/

@@ -14,8 +14,12 @@ import {
   UserRound,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
+import AccountAccessConfirmationModal, {
+  type AccountAccessAction,
+} from '../../components/modals/AccountAccessConfirmationModal.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
 import Card from '../../components/ui/Card.js'
@@ -179,6 +183,26 @@ const TeamMemberDetailPage = () => {
   const { memberId } = useParams()
   const member = (memberId && members[memberId]) || fallbackMember
   const displayId = memberId ?? member.id
+  const [accountStatus, setAccountStatus] = useState<AccountStatus>(member.status)
+  const [accessAction, setAccessAction] = useState<AccountAccessAction | null>(null)
+
+  useEffect(() => {
+    setAccountStatus(member.status)
+    setAccessAction(null)
+  }, [member.id, member.status])
+
+  const confirmAccessChange = () => {
+    if (!accessAction) return
+
+    if (accessAction === 'cancel-invitation') {
+      setAccessAction(null)
+      navigate('/team')
+      return
+    }
+
+    setAccountStatus(accessAction === 'activate' ? 'Active' : 'Disabled')
+    setAccessAction(null)
+  }
 
   return (
     <AppShell>
@@ -194,7 +218,7 @@ const TeamMemberDetailPage = () => {
             </Link>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <h1 className="text-3xl font-semibold tracking-normal text-[#111827]">{member.fullName}</h1>
-              <Badge tone={statusTone[member.status]}>{member.status}</Badge>
+              <Badge tone={statusTone[accountStatus]}>{accountStatus}</Badge>
               <Badge tone={roleTone[member.role]}>{member.role}</Badge>
               <Badge tone="neutral">{displayId}</Badge>
             </div>
@@ -212,16 +236,35 @@ const TeamMemberDetailPage = () => {
             >
               Edit account
             </Button>
-            {member.status === 'Invited' ? (
-              <Button leftIcon={<RefreshCw size={17} />} size="md">
-                Resend invitation
-              </Button>
-            ) : member.status === 'Active' ? (
-              <Button leftIcon={<PowerOff size={17} />} size="md" variant="danger">
+            {accountStatus === 'Invited' ? (
+              <>
+                <Button leftIcon={<RefreshCw size={17} />} size="md">
+                  Resend invitation
+                </Button>
+                <Button
+                  leftIcon={<PowerOff size={17} />}
+                  onClick={() => setAccessAction('cancel-invitation')}
+                  size="md"
+                  variant="danger"
+                >
+                  Cancel invitation
+                </Button>
+              </>
+            ) : accountStatus === 'Active' ? (
+              <Button
+                leftIcon={<PowerOff size={17} />}
+                onClick={() => setAccessAction('disable')}
+                size="md"
+                variant="danger"
+              >
                 Disable account
               </Button>
             ) : (
-              <Button leftIcon={<Power size={17} />} size="md">
+              <Button
+                leftIcon={<Power size={17} />}
+                onClick={() => setAccessAction('activate')}
+                size="md"
+              >
                 Activate account
               </Button>
             )}
@@ -263,7 +306,7 @@ const TeamMemberDetailPage = () => {
                     Current authentication and access status.
                   </p>
                 </div>
-                <Badge tone={statusTone[member.status]}>{member.status}</Badge>
+                <Badge tone={statusTone[accountStatus]}>{accountStatus}</Badge>
               </div>
 
               <dl className="mt-5 divide-y divide-[#E5E7EB]">
@@ -372,6 +415,17 @@ const TeamMemberDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {accessAction ? (
+        <AccountAccessConfirmationModal
+          action={accessAction}
+          email={member.email}
+          isOpen
+          memberName={member.fullName}
+          onClose={() => setAccessAction(null)}
+          onConfirm={confirmAccessChange}
+        />
+      ) : null}
     </AppShell>
   )
 }
