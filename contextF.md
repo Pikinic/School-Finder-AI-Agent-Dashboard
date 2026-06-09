@@ -239,6 +239,90 @@ Implemented so far:
   - Advisor assignment selector.
   - Conversation metadata for message count, start date, and latest activity.
 - Conversation Detail UI uses the reusable `Card`, `Badge`, and `Button` components and follows the internal operations design direction.
+- `/recommendations` is protected and renders `src/pages/recommendations/RecommendationsPage.tsx`.
+- `RecommendationsPage` now renders inside `AppShell` as the global recommendation review workspace using clearly fictional API-shaped mock data:
+  - Summary cards for generated recommendations, shortlisted options, strong matches, and missing requirements.
+  - Working search by student, school, or program.
+  - Working student and country filters.
+  - Recommendation records grouped with student identity, school, program, country, tuition, and generation time.
+  - Overall fit score and score breakdown for program, budget, intake, and visa factors.
+  - Recommendation reasons and missing-requirement indicators.
+  - Navigation to Student Detail, School Detail, and Program Detail.
+  - Working local shortlist toggles.
+  - Working two-recommendation comparison selection and comparison panel.
+  - Empty state with a working Clear filters action.
+  - Pagination and score-sorting controls are present as UI scaffolding.
+- Recommendations UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- The sidebar Admin section now includes Team, Advisors, and Settings.
+- The sidebar workspace description now includes team access management alongside operational and advisor workflows.
+- `/team` is protected and renders `src/pages/team/TeamPage.tsx`.
+- `TeamPage` now renders inside `AppShell` as the internal account-management directory using clearly fictional API-shaped mock data:
+  - Summary cards for total team members, active accounts, pending invitations, and disabled accounts.
+  - Working search by name, email, or user ID.
+  - Working role and account-status filters.
+  - Team-member table with role, account status, last login, invitation date, and account actions.
+  - Working row meatball menu that closes on outside click or Escape.
+  - Shared account actions for viewing an account and editing its role and permissions.
+  - Status-aware actions: resend or cancel an invitation, disable an active account, or activate a disabled account.
+  - Row actions are UI scaffolding until the Team detail route and backend endpoints are connected.
+  - Empty state with a working Clear filters action.
+  - Pagination controls are present as UI scaffolding.
+  - Role summaries distinguish Admin, Advisor, and Operations responsibilities.
+  - Invite team member action navigates to the protected `/team/invite` workflow.
+- Team UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/team/invite` is protected and renders `src/pages/team/InviteTeamMemberPage.tsx`.
+- `InviteTeamMemberPage` provides:
+  - Required full name and work email fields, with an optional phone number.
+  - Role selection for Admin, Advisor, and Operations.
+  - A dynamic permission summary for the selected role.
+  - Clear invitation-state and account-activation guidance.
+  - No password input; the invited member sets their own password through the secure email link.
+  - Desktop header actions and a responsive mobile action bar.
+- The invitation submission is UI scaffolding that returns to Team until `POST /api/team/invitations` is connected.
+- `/team/:memberId` is protected and renders `src/pages/team/TeamMemberDetailPage.tsx`.
+- `TeamMemberDetailPage` provides an account-focused view separate from advisor workload:
+  - Internal identity, work email, phone number, user ID, role, status, and last login.
+  - Invitation sender, sent date, acceptance state, account creation date, and last update.
+  - Role-based permission visibility for Admin, Advisor, and Operations accounts.
+  - Recent invitation, access, and authentication activity.
+  - Status-aware controls to resend an invitation, disable an active account, or activate a disabled account.
+  - Clear password-security guidance without exposing or collecting another user's password.
+- Team row actions now navigate to the member detail page and its role-and-permissions section.
+- Team member detail actions are UI scaffolding until `GET /api/team/:userId`, `PATCH /api/team/:userId`, and `PATCH /api/team/:userId/status` are connected.
+- `/team/:memberId/edit` is protected and renders `src/pages/team/EditTeamMemberPage.tsx`.
+- `EditTeamMemberPage` provides:
+  - Prefilled full name, work email, and optional phone fields.
+  - Role selection for Admin, Advisor, and Operations accounts.
+  - Role-aware permission checkboxes with a live selected-permission summary.
+  - Read-only account status, user ID, current role, and last-login context.
+  - No password or account-status fields; passwords remain private and access status stays a separate explicit action.
+  - Cancel and development-only save behavior returning to the member detail page.
+- Team Detail `Edit account` and `Edit permissions` actions, plus the Team row menu, now navigate to the shared account edit page.
+- `/advisors` is protected and renders `src/pages/advisors/AdvisorsPage.tsx`.
+- `AdvisorsPage` is the advisor-operations surface and remains separate from Team account management:
+  - Summary cards for active advisors, assigned students, available capacity, and follow-ups due.
+  - Working search by advisor name, email, or specialization.
+  - Working availability and workload filters.
+  - Advisor table with availability, student capacity, workload state, specializations, follow-ups, and last activity.
+  - Visual workload progress indicators for balanced, near-capacity, and over-capacity advisors.
+  - Follow-up review queue and capacity-attention summary.
+  - Navigation to Team for account management and Students for assignment review.
+  - Empty state with a working Clear filters action.
+  - Pagination controls and student-specific advisor navigation remain UI scaffolding.
+- Advisors UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/settings` is protected and renders `src/pages/settings/SettingsPage.tsx`.
+- `SettingsPage` provides one operational configuration workspace with category navigation for:
+  - Destination countries.
+  - Program categories.
+  - Study levels.
+  - Lead statuses.
+  - Application statuses.
+  - Recommendation scoring weights.
+- List settings support working local add, enable/disable, and delete interactions.
+- Disabled values remain visible for existing-record compatibility while being marked unavailable for new records.
+- Recommendation weights provide synchronized range and numeric controls with a visible total that must equal 100%.
+- The Settings save action and configuration changes are UI scaffolding until backend settings endpoints are defined.
+- Settings UI follows the internal operations design direction and uses the reusable `Card`, `Badge`, `Button`, and `Input` components.
 - `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
 - The Programs page `Add program` action now links to the global program creation route.
 - `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
@@ -269,6 +353,8 @@ Verification status:
 - `npx tsc --noEmit` passes after the shared Program form modes and `/programs/new` route changes.
 - `npx tsc --noEmit` passes after the Conversations page and `/conversations` route changes.
 - `npx tsc --noEmit` passes after the Conversation Detail page and `/conversations/:conversationId` route changes.
+- `npx tsc --noEmit` passes after the Recommendations page and `/recommendations` route changes.
+- `npx tsc --noEmit` passes after the Team page, sidebar navigation, and `/team` route changes.
 - `npm run build` passes and produces the Vite production build in `dist`.
 - `npm run lint` currently fails because ESLint is not configured with a TypeScript parser/plugin. The failure is a tooling configuration issue, not specific to the new UI components; existing TSX syntax such as `main.tsx` and `ProtectedRoute.tsx` also fails to parse.
 
@@ -290,6 +376,8 @@ Known next steps:
 - Connect Edit Program to the program detail query and `PATCH /api/programs/:id`.
 - Replace Conversations mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Conversation Detail mock data with a TanStack Query-backed `GET /api/conversations/:id` request.
+- Replace Recommendations mock data with TanStack Query-backed recommendation API data when backend endpoints are ready.
+- Replace Team mock data with TanStack Query-backed team API data when backend endpoints are ready.
 - Make Students / Leads search, filters, sorting, and pagination stateful once API query parameters are available.
 - Add form validation and API loading, success, and error states to Add Student.
 - Make Student Detail actions functional once advisor assignment, status update, notes, recommendations, and conversation endpoints are available.
@@ -303,7 +391,15 @@ Known next steps:
 - Make Programs sorting and pagination functional once API query parameters are available.
 - Make Conversations sorting, pagination, advisor assignment, and status actions functional once backend endpoints are available.
 - Make Conversation Detail reply, advisor assignment, escalation, and resolution actions functional once backend endpoints are available.
-- Add Recommendations page at `src/pages/recommendations/RecommendationsPage.tsx`.
+- Make Recommendations shortlist, comparison persistence, sorting, and pagination functional once backend endpoints are available.
+- Connect `InviteTeamMemberPage` to `POST /api/team/invitations` with validation, loading, success, and error states.
+- Connect `TeamMemberDetailPage` to `GET /api/team/:userId`.
+- Connect `EditTeamMemberPage` profile, role, and permission changes to `PATCH /api/team/:userId`.
+- Connect Team invitation resend/cancel and account activation/disable actions when backend endpoints are available.
+- Make Team pagination functional once API query parameters are available.
+- Replace Advisors mock data with `GET /api/advisors` and connect availability/workload updates to `PATCH /api/advisors/:id`.
+- Add advisor-specific assignment filtering and detail navigation when the advisor API contract is ready.
+- Define settings API endpoints and replace local Settings state with persisted operational configuration.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
@@ -665,15 +761,48 @@ Features:
 
 Purpose:
 
-- Manage company advisors.
+- Manage advisor workload and student assignment.
 
 Features:
 
-- Add advisor.
-- Edit advisor.
-- Activate/deactivate advisor.
 - View assigned students.
 - View workload.
+- View availability.
+- View specializations.
+- Review follow-ups.
+
+### Team Page
+
+Purpose:
+
+- Manage all internal user accounts separately from advisor workload.
+
+User roles:
+
+- Admin.
+- Advisor.
+- Operations staff.
+
+Features:
+
+- Invite team member.
+- Select role.
+- View invitation and account status.
+- Edit profile and permissions.
+- Activate or disable an account.
+- Resend an invitation.
+- Review last login.
+
+Account flow:
+
+1. Admin invites a team member using their name, email, and role.
+2. The backend creates an account with `invited` status.
+3. The team member receives an invitation link.
+4. The team member sets their own password.
+5. The account becomes active.
+6. The team member signs in through the shared login page.
+
+Administrators must not create, store, or view another team member's password.
 
 ### Settings Page
 
@@ -754,6 +883,11 @@ school-finder-frontend/
         ConversationDetailPage.tsx
       recommendations/
         RecommendationsPage.tsx
+      team/
+        TeamPage.tsx
+        InviteTeamMemberPage.tsx
+        TeamMemberDetailPage.tsx
+        EditTeamMemberPage.tsx
       advisors/
         AdvisorsPage.tsx
       settings/
@@ -771,6 +905,7 @@ school-finder-frontend/
       programsApi.ts
       conversationsApi.ts
       recommendationsApi.ts
+      teamApi.ts
       advisorsApi.ts
 
     hooks/
@@ -779,6 +914,7 @@ school-finder-frontend/
       useSchools.ts
       usePrograms.ts
       useRecommendations.ts
+      useTeam.ts
 
     store/
       authStore.ts
@@ -790,6 +926,7 @@ school-finder-frontend/
       program.ts
       conversation.ts
       recommendation.ts
+      user.ts
       advisor.ts
 
     utils/
@@ -839,12 +976,40 @@ GET    /api/recommendations/student/:studentId
 GET    /api/conversations
 GET    /api/conversations/:id
 
+GET    /api/team
+POST   /api/team/invitations
+POST   /api/team/invitations/:id/resend
+GET    /api/team/:userId
+PATCH  /api/team/:userId
+PATCH  /api/team/:userId/status
+
 GET    /api/advisors
 POST   /api/advisors
 PATCH  /api/advisors/:id
 ```
 
 ## Frontend Data Models
+
+### User
+
+```ts
+type User = {
+  id: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  role: 'admin' | 'advisor' | 'operations';
+  status: 'invited' | 'active' | 'disabled';
+  permissions?: string[];
+  lastLoginAt?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+```
+
+All internal users authenticate through the same login page. Role and permissions determine which records and actions they can access.
+
+An advisor may also have an advisor-specific profile linked through `userId` for workload, availability, specializations, and student assignments.
 
 ### Student
 
@@ -968,6 +1133,11 @@ Dashboard
   |
   +--> Conversations
   |
+  +--> Team
+  |       |
+  |       +--> Invite Team Member
+  |       +--> Team Member Detail
+  |
   +--> Advisors
   |
   +--> Settings
@@ -987,6 +1157,7 @@ The first frontend version should include:
 - Program create/edit form.
 - Conversation detail page.
 - Recommendations section on student detail page.
+- Team list and invitation flow.
 - Basic advisor assignment.
 
 ## Recommended Development Order
@@ -1002,10 +1173,12 @@ The first frontend version should include:
 9. Build schools and programs pages.
 10. Build conversations page.
 11. Build recommendation display.
-12. Add advisor assignment and status updates.
-13. Add loading, empty, and error states.
-14. Add form validation.
-15. Add final responsive polish.
+12. Build Team account and invitation management.
+13. Build advisor workload and assignment views.
+14. Add advisor assignment and status updates.
+15. Add loading, empty, and error states.
+16. Add form validation.
+17. Add final responsive polish.
 
 ## Frontend Quality Requirements
 
@@ -1030,6 +1203,7 @@ Schools
 Programs
 Conversations
 Recommendations
+Team
 Advisors
 Settings
 ```

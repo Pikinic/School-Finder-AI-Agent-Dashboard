@@ -7,6 +7,7 @@ import {
   School,
   Settings,
   Sparkles,
+  UsersRound,
   UserRoundCheck,
   Users,
 } from 'lucide-react'
@@ -48,6 +49,7 @@ const navSections: NavSection[] = [
   {
     label: 'Admin',
     items: [
+      { icon: UsersRound, label: 'Team', path: '/team' },
       { icon: UserRoundCheck, label: 'Advisors', path: '/advisors' },
       { icon: Settings, label: 'Settings', path: '/settings' },
     ],
@@ -122,7 +124,7 @@ const SidebarContent = ({ onNavigate }: { onNavigate?: () => void }) => {
       <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
         <p className="text-sm font-semibold text-[#111827]">Internal workspace</p>
         <p className="mt-1 text-xs leading-5 text-[#6B7280]">
-          Manage students, schools, recommendations, and advisor workflows.
+          Manage placement operations, team access, and advisor workflows.
         </p>
       </div>
     </>

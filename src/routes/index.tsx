@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
+import AdvisorsPage from '../pages/advisors/AdvisorsPage.js'
 import LoginPage from '../pages/auth/LoginPage.js'
 import ConversationDetailPage from '../pages/conversations/ConversationDetailPage.js'
 import ConversationsPage from '../pages/conversations/ConversationsPage.js'
@@ -8,13 +9,19 @@ import EditProgramPage from '../pages/programs/EditProgramPage.js'
 import GlobalAddProgramPage from '../pages/programs/GlobalAddProgramPage.js'
 import ProgramDetailPage from '../pages/programs/ProgramDetailPage.js'
 import ProgramsPage from '../pages/programs/ProgramsPage.js'
+import RecommendationsPage from '../pages/recommendations/RecommendationsPage.js'
 import AddSchoolPage from '../pages/schools/AddSchoolPage.js'
 import EditSchoolPage from '../pages/schools/EditSchoolPage.js'
 import SchoolDetailPage from '../pages/schools/SchoolDetailPage.js'
 import SchoolsPage from '../pages/schools/SchoolsPage.js'
+import SettingsPage from '../pages/settings/SettingsPage.js'
 import AddStudentPage from '../pages/students/AddStudentPage.js'
 import StudentDetailPage from '../pages/students/StudentDetailPage.js'
 import StudentsPage from '../pages/students/StudentsPage.js'
+import EditTeamMemberPage from '../pages/team/EditTeamMemberPage.js'
+import InviteTeamMemberPage from '../pages/team/InviteTeamMemberPage.js'
+import TeamMemberDetailPage from '../pages/team/TeamMemberDetailPage.js'
+import TeamPage from '../pages/team/TeamPage.js'
 import ProtectedRoute from './ProtectedRoute.js'
 
 const AppRoutes = () => {
@@ -31,11 +38,18 @@ const AppRoutes = () => {
         <Route path='/programs/new' element={<ProtectedRoute><GlobalAddProgramPage /></ProtectedRoute>} />
         <Route path='/programs/:programId/edit' element={<ProtectedRoute><EditProgramPage /></ProtectedRoute>} />
         <Route path='/programs/:programId' element={<ProtectedRoute><ProgramDetailPage /></ProtectedRoute>} />
+        <Route path='/recommendations' element={<ProtectedRoute><RecommendationsPage /></ProtectedRoute>} />
         <Route path='/schools' element={<ProtectedRoute><SchoolsPage /></ProtectedRoute>} />
         <Route path='/schools/new' element={<ProtectedRoute><AddSchoolPage /></ProtectedRoute>} />
         <Route path='/schools/:schoolId/edit' element={<ProtectedRoute><EditSchoolPage /></ProtectedRoute>} />
         <Route path='/schools/:schoolId/programs/new' element={<ProtectedRoute><AddProgramPage /></ProtectedRoute>} />
         <Route path='/schools/:schoolId' element={<ProtectedRoute><SchoolDetailPage /></ProtectedRoute>} />
+        <Route path='/team' element={<ProtectedRoute><TeamPage /></ProtectedRoute>} />
+        <Route path='/team/invite' element={<ProtectedRoute><InviteTeamMemberPage /></ProtectedRoute>} />
+        <Route path='/team/:memberId/edit' element={<ProtectedRoute><EditTeamMemberPage /></ProtectedRoute>} />
+        <Route path='/team/:memberId' element={<ProtectedRoute><TeamMemberDetailPage /></ProtectedRoute>} />
+        <Route path='/advisors' element={<ProtectedRoute><AdvisorsPage /></ProtectedRoute>} />
+        <Route path='/settings' element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
     </Routes>
   )
 }
