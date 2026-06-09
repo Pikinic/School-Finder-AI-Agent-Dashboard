@@ -310,6 +310,19 @@ Implemented so far:
   - Empty state with a working Clear filters action.
   - Pagination controls and student-specific advisor navigation remain UI scaffolding.
 - Advisors UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/settings` is protected and renders `src/pages/settings/SettingsPage.tsx`.
+- `SettingsPage` provides one operational configuration workspace with category navigation for:
+  - Destination countries.
+  - Program categories.
+  - Study levels.
+  - Lead statuses.
+  - Application statuses.
+  - Recommendation scoring weights.
+- List settings support working local add, enable/disable, and delete interactions.
+- Disabled values remain visible for existing-record compatibility while being marked unavailable for new records.
+- Recommendation weights provide synchronized range and numeric controls with a visible total that must equal 100%.
+- The Settings save action and configuration changes are UI scaffolding until backend settings endpoints are defined.
+- Settings UI follows the internal operations design direction and uses the reusable `Card`, `Badge`, `Button`, and `Input` components.
 - `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
 - The Programs page `Add program` action now links to the global program creation route.
 - `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
@@ -386,6 +399,7 @@ Known next steps:
 - Make Team pagination functional once API query parameters are available.
 - Replace Advisors mock data with `GET /api/advisors` and connect availability/workload updates to `PATCH /api/advisors/:id`.
 - Add advisor-specific assignment filtering and detail navigation when the advisor API contract is ready.
+- Define settings API endpoints and replace local Settings state with persisted operational configuration.
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
