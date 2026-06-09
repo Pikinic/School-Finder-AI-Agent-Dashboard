@@ -1,4 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
+import AccountSettingsPage from '../pages/account/AccountSettingsPage.js'
+import ProfilePage from '../pages/account/ProfilePage.js'
 import AdvisorsPage from '../pages/advisors/AdvisorsPage.js'
 import LoginPage from '../pages/auth/LoginPage.js'
 import SetPasswordPage from '../pages/auth/SetPasswordPage.js'
@@ -30,6 +32,8 @@ const AppRoutes = () => {
     <Routes>
         <Route path='/login' element={<LoginPage />} />
         <Route path='/set-password/:token' element={<SetPasswordPage />} />
+        <Route path='/profile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path='/account-settings' element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
         <Route path='/' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path='/conversations' element={<ProtectedRoute><ConversationsPage /></ProtectedRoute>} />
         <Route path='/conversations/:conversationId' element={<ProtectedRoute><ConversationDetailPage /></ProtectedRoute>} />

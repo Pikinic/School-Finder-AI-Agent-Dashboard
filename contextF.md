@@ -27,6 +27,27 @@ Implemented so far:
   - Clear guidance that administrators cannot create or view another user's password.
 - Ordinary token values render the valid development flow; `invalid`, `expired`, and `used` can be used to preview failure states.
 - The current Set Password submission is local UI scaffolding until invitation validation and acceptance APIs are connected.
+- `/profile` is protected and renders `src/pages/account/ProfilePage.tsx`.
+- The topbar `View profile` menu action now navigates to `/profile` and closes the profile menu.
+- `ProfilePage` provides a read-only current-user view using mock authenticated-user data:
+  - Name, work email, phone number, user ID, role, and account status.
+  - Last login, account creation date, and profile-update timestamp.
+  - Assigned permissions and recent personal account activity.
+  - Clear guidance that role, permissions, and status are administered through Team, while personal preferences and password changes belong in Account settings.
+- The current mock user is an Admin. Advisor-specific profile information should render conditionally when the authenticated API user has the Advisor role.
+- Profile data remains UI scaffolding until `GET /api/auth/me` is connected to shared authentication state.
+- `/account-settings` is protected and renders `src/pages/account/AccountSettingsPage.tsx`.
+- The topbar `Account settings` menu action now navigates to `/account-settings` and closes the profile menu.
+- `AccountSettingsPage` provides:
+  - Editable current-user name, work email, and phone fields.
+  - Working local notification toggles for assignments, conversations, follow-ups, recommendations, and team activity.
+  - A separate change-password form requiring the current password, a valid new password, and matching confirmation.
+  - Independent password visibility controls and live password-requirement feedback.
+  - Read-only role, status, and user ID context.
+  - Active-session information and a sign-out-other-sessions action scaffold.
+  - Navigation back to the read-only Profile page.
+- Role, permissions, and account status remain excluded from personal Account Settings and continue to be managed through Team.
+- Account Settings changes are local UI scaffolding until `PATCH /api/auth/me`, `POST /api/auth/change-password`, and session-management endpoints are connected.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -376,7 +397,9 @@ Known next steps:
 - Replace the development-only login behavior with a real auth API call.
 - Add authenticated user state and logout handling.
 - Connect `SetPasswordPage` to `GET /api/auth/invitations/:token` and `POST /api/auth/invitations/:token/accept`.
-- Add protected current-user pages at `/profile` and `/account-settings`, and connect the topbar menu actions.
+- Replace Profile mock data with authenticated user state from `GET /api/auth/me`.
+- Connect Account Settings personal details to `PATCH /api/auth/me`.
+- Connect password changes to `POST /api/auth/change-password` and define authenticated session-management endpoints.
 - Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Students / Leads mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Connect Add Student to `POST /api/students` and persist acquisition source metadata.

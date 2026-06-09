@@ -90,22 +90,24 @@ const Topbar = ({ onMenuClick }: TopbarProps) => {
                   <p className="mt-1 text-xs font-medium text-[#6B7280]">{currentUser.role}</p>
                 </div>
 
-                <button
+                <Link
                   className="mt-2 flex h-10 w-full items-center gap-3 rounded-xl px-3 text-sm font-medium text-[#374151] transition hover:bg-[#F5F6F8]"
+                  onClick={() => setIsProfileMenuOpen(false)}
                   role="menuitem"
-                  type="button"
+                  to="/profile"
                 >
                   <UserRound size={17} />
                   View profile
-                </button>
-                <button
+                </Link>
+                <Link
                   className="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-sm font-medium text-[#374151] transition hover:bg-[#F5F6F8]"
+                  onClick={() => setIsProfileMenuOpen(false)}
                   role="menuitem"
-                  type="button"
+                  to="/account-settings"
                 >
                   <Settings size={17} />
                   Account settings
-                </button>
+                </Link>
                 <button
                   className="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-sm font-medium text-[#DC2626] transition hover:bg-[#FEE2E2]"
                   role="menuitem"
