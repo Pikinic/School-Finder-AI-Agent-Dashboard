@@ -17,6 +17,16 @@ Implemented so far:
 - App-level routing is centralized in `src/routes/index.tsx`.
 - `src/App.tsx` renders the route tree through `AppRoutes`.
 - `/login` renders `src/pages/auth/LoginPage.tsx`.
+- `/set-password/:token` is public and renders `src/pages/auth/SetPasswordPage.tsx`.
+- `SetPasswordPage` provides the invitation account-activation workflow:
+  - Development token validation with loading, valid, invalid, expired, and already-used states.
+  - New-password and confirm-password fields with independent visibility controls.
+  - Live checks for minimum length, uppercase, lowercase, and numeric requirements.
+  - Password-match validation and disabled submission while activation is processing.
+  - Success state with navigation to the shared Login page.
+  - Clear guidance that administrators cannot create or view another user's password.
+- Ordinary token values render the valid development flow; `invalid`, `expired`, and `used` can be used to preview failure states.
+- The current Set Password submission is local UI scaffolding until invitation validation and acceptance APIs are connected.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -44,6 +54,9 @@ Implemented so far:
   - The topbar includes global search, an Add student quick action, notification button, staff profile control, and a mobile menu trigger.
   - The staff profile control is a profile/account menu, not a role selector.
   - The current profile menu uses mock authenticated-user data (`Amina Yusuf`, `Admin`) and includes View profile, Account settings, and Sign out menu actions.
+  - View profile should navigate to the protected `/profile` page for the currently authenticated user's read-only identity, role, permissions, and account summary.
+  - Account settings should navigate to the protected `/account-settings` page for the current user's own contact details, notification preferences, and password/security actions.
+  - Topbar Account settings is personal to the signed-in user and is separate from the sidebar Settings page, which controls organization-wide operational values.
   - On mobile, the profile menu remains visible as a compact initials button; on desktop it shows the full user name, role, initials, and chevron.
   - User name, role, initials, and sign-out behavior should later come from the real authentication state/API.
   - The topbar uses a white background, bottom border, compact height, and restrained dashboard styling.
@@ -362,6 +375,8 @@ Known next steps:
 
 - Replace the development-only login behavior with a real auth API call.
 - Add authenticated user state and logout handling.
+- Connect `SetPasswordPage` to `GET /api/auth/invitations/:token` and `POST /api/auth/invitations/:token/accept`.
+- Add protected current-user pages at `/profile` and `/account-settings`, and connect the topbar menu actions.
 - Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Students / Leads mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Connect Add Student to `POST /api/students` and persist acquisition source metadata.
@@ -584,6 +599,71 @@ Actions:
 - Store auth token securely.
 - Redirect to dashboard.
 
+### Set Password Page
+
+Purpose:
+
+- Complete an invited internal user's account setup.
+
+Route:
+
+- Public `/set-password/:token`.
+
+Fields:
+
+- New password.
+- Confirm password.
+
+Behavior:
+
+- Validate the invitation token with the backend before allowing submission.
+- Show clear invalid, expired, already-used, loading, and success states.
+- Enforce the backend password policy and require both password fields to match.
+- Accept the invitation, store the password securely on the backend, and activate the account.
+- Redirect the user to the shared Login page after successful setup.
+- Never expose an administrator-created password because administrators do not create team-member passwords.
+
+This page is only for first-time invitation acceptance. Forgotten-password recovery must use a separate reset-password token flow.
+
+### Profile Page
+
+Purpose:
+
+- Show the currently authenticated user's own account and role information.
+
+Route:
+
+- Protected `/profile`.
+
+Sections:
+
+- Name, work email, phone, and user ID.
+- Role and permissions.
+- Account status.
+- Last login and account timestamps.
+- Advisor profile summary when the current user is an advisor.
+
+The Profile page is read-only. It is different from Team Member Detail because it always represents the signed-in user and must not expose administrative account controls.
+
+### Account Settings Page
+
+Purpose:
+
+- Manage preferences and security for the currently authenticated user.
+
+Route:
+
+- Protected `/account-settings`.
+
+Sections:
+
+- Editable personal contact details where permitted.
+- Notification preferences.
+- Change-password workflow requiring the current password.
+- Active-session or security information when supported by the backend.
+
+Role, permissions, and account status are not editable here. Administrators manage those fields through Team.
+
 ### Dashboard Page
 
 Purpose:
@@ -804,6 +884,15 @@ Account flow:
 
 Administrators must not create, store, or view another team member's password.
 
+Invitation acceptance flow:
+
+1. The invitation email contains a single-use, time-limited setup token.
+2. The link opens `/set-password/:token`.
+3. The frontend validates the token with the backend.
+4. The invited user enters and confirms their own password.
+5. The backend accepts the invitation, hashes the password, and changes the account from `invited` to `active`.
+6. The user is redirected to Login and signs in through the shared authentication flow.
+
 ### Settings Page
 
 Purpose:
@@ -818,6 +907,22 @@ Settings:
 - Lead statuses.
 - Application statuses.
 - Recommendation scoring weights.
+
+### Modal Policy
+
+Use modals only for short, focused actions that do not justify a dedicated page.
+
+Core reusable modals:
+
+1. Assign or reassign advisor.
+2. Update workflow status.
+3. Confirm account access changes such as disable, activate, or cancel invitation.
+4. Confirm deletion of a removable record or setting value.
+5. Warn about unsaved form changes before navigation.
+
+An optional quick follow-up or internal-note modal may be added when the workflow needs in-context entry.
+
+Do not use modals for Login, invitation password setup, Profile, Account settings, school/program/student forms, Team Member Detail, or Team account editing. These workflows require dedicated pages.
 
 ## Suggested Folder Structure
 
@@ -861,6 +966,10 @@ school-finder-frontend/
     pages/
       auth/
         LoginPage.tsx
+        SetPasswordPage.tsx
+      account/
+        ProfilePage.tsx
+        AccountSettingsPage.tsx
       dashboard/
         DashboardPage.tsx
       students/
@@ -953,6 +1062,10 @@ Example API routes the frontend may consume:
 ```text
 POST   /api/auth/login
 GET    /api/auth/me
+GET    /api/auth/invitations/:token
+POST   /api/auth/invitations/:token/accept
+PATCH  /api/auth/me
+POST   /api/auth/change-password
 
 GET    /api/students
 GET    /api/students/:id
@@ -1099,16 +1212,32 @@ type Recommendation = {
 
 ## Authentication Flow
 
+Invitation setup:
+
+1. Invited user opens the single-use link at `/set-password/:token`.
+2. Frontend validates the invitation token.
+3. User creates and confirms their own password.
+4. Backend hashes the password, marks the token used, and activates the account.
+5. Frontend redirects to Login.
+
+Normal sign-in:
+
 1. User logs in with email and password.
 2. Backend returns access token and user profile.
-3. Frontend stores token.
-4. API client attaches token to protected requests.
-5. Protected routes redirect unauthenticated users to login.
+3. Frontend stores token using the backend's chosen secure authentication strategy.
+4. API client attaches authentication to protected requests.
+5. Protected routes redirect unauthenticated users to Login.
 6. Logout clears token and user state.
 
 ## UI Flow
 
 ```text
+Invitation email
+  |
+  v
+Set Password
+  |
+  v
 Login
   |
   v
@@ -1141,6 +1270,12 @@ Dashboard
   +--> Advisors
   |
   +--> Settings
+  |
+  +--> Topbar Profile Menu
+          |
+          +--> Profile
+          +--> Account Settings
+          +--> Sign Out
 ```
 
 ## MVP Frontend Scope
@@ -1148,6 +1283,8 @@ Dashboard
 The first frontend version should include:
 
 - Login page.
+- Invitation password setup page.
+- Current-user Profile and Account Settings pages.
 - Protected dashboard layout.
 - Students list.
 - Student detail page.
