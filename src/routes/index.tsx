@@ -16,6 +16,7 @@ import SchoolsPage from '../pages/schools/SchoolsPage.js'
 import AddStudentPage from '../pages/students/AddStudentPage.js'
 import StudentDetailPage from '../pages/students/StudentDetailPage.js'
 import StudentsPage from '../pages/students/StudentsPage.js'
+import TeamPage from '../pages/team/TeamPage.js'
 import ProtectedRoute from './ProtectedRoute.js'
 
 const AppRoutes = () => {
@@ -38,6 +39,7 @@ const AppRoutes = () => {
         <Route path='/schools/:schoolId/edit' element={<ProtectedRoute><EditSchoolPage /></ProtectedRoute>} />
         <Route path='/schools/:schoolId/programs/new' element={<ProtectedRoute><AddProgramPage /></ProtectedRoute>} />
         <Route path='/schools/:schoolId' element={<ProtectedRoute><SchoolDetailPage /></ProtectedRoute>} />
+        <Route path='/team' element={<ProtectedRoute><TeamPage /></ProtectedRoute>} />
     </Routes>
   )
 }
