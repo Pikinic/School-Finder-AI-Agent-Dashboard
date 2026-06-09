@@ -17,6 +17,7 @@ import {
   UsersRound,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
@@ -117,6 +118,7 @@ const teamStats = [
 ] as const
 
 const TeamPage = () => {
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [role, setRole] = useState('All roles')
   const [status, setStatus] = useState('All statuses')
@@ -174,7 +176,7 @@ const TeamPage = () => {
             </p>
           </div>
 
-          <Button leftIcon={<MailPlus size={17} />} size="md">
+          <Button leftIcon={<MailPlus size={17} />} onClick={() => navigate('/team/invite')} size="md">
             Invite team member
           </Button>
         </div>

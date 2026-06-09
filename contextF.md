@@ -268,8 +268,17 @@ Implemented so far:
   - Empty state with a working Clear filters action.
   - Pagination controls are present as UI scaffolding.
   - Role summaries distinguish Admin, Advisor, and Operations responsibilities.
-  - Invite team member action is present as UI scaffolding for the next workflow.
+  - Invite team member action navigates to the protected `/team/invite` workflow.
 - Team UI uses the reusable `Card`, `Badge`, `Button`, and `Input` components and follows the internal operations design direction.
+- `/team/invite` is protected and renders `src/pages/team/InviteTeamMemberPage.tsx`.
+- `InviteTeamMemberPage` provides:
+  - Required full name and work email fields, with an optional phone number.
+  - Role selection for Admin, Advisor, and Operations.
+  - A dynamic permission summary for the selected role.
+  - Clear invitation-state and account-activation guidance.
+  - No password input; the invited member sets their own password through the secure email link.
+  - Desktop header actions and a responsive mobile action bar.
+- The invitation submission is UI scaffolding that returns to Team until `POST /api/team/invitations` is connected.
 - `/programs/new` is protected and renders `src/pages/programs/GlobalAddProgramPage.tsx`.
 - The Programs page `Add program` action now links to the global program creation route.
 - `GlobalAddProgramPage` reuses `ProgramForm` with a required school selector:
@@ -339,7 +348,7 @@ Known next steps:
 - Make Conversations sorting, pagination, advisor assignment, and status actions functional once backend endpoints are available.
 - Make Conversation Detail reply, advisor assignment, escalation, and resolution actions functional once backend endpoints are available.
 - Make Recommendations shortlist, comparison persistence, sorting, and pagination functional once backend endpoints are available.
-- Add Team invite flow at `src/pages/team/InviteTeamMemberPage.tsx`.
+- Connect `InviteTeamMemberPage` to `POST /api/team/invitations` with validation, loading, success, and error states.
 - Wire Team meatball-menu account actions to `src/pages/team/TeamMemberDetailPage.tsx`.
 - Connect Team invitation resend/cancel and account activation/disable actions when backend endpoints are available.
 - Make Team pagination functional once API query parameters are available.
