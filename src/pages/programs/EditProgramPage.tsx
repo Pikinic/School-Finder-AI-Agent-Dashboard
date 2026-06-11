@@ -1,9 +1,11 @@
 import { ArrowLeft, BookOpen, Building2, CalendarDays } from 'lucide-react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import ProgramForm from '../../components/forms/ProgramForm.js'
 import AppShell from '../../components/layout/AppShell.js'
+import UnsavedChangesModal from '../../components/modals/UnsavedChangesModal.js'
 import Badge from '../../components/ui/Badge.js'
 import Card from '../../components/ui/Card.js'
+import useUnsavedChanges from '../../hooks/useUnsavedChanges.js'
 
 const schoolOptions = [
   { id: 'SCH-2048', name: 'Northbridge College' },
@@ -36,10 +38,10 @@ const program = {
 }
 
 const EditProgramPage = () => {
-  const navigate = useNavigate()
   const { programId } = useParams()
   const displayId = programId ?? program.id
   const detailPath = `/programs/${displayId}`
+  const unsavedChanges = useUnsavedChanges()
 
   return (
     <AppShell>
@@ -64,10 +66,11 @@ const EditProgramPage = () => {
         <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
           <ProgramForm
             initialValues={program}
-            onCancel={() => navigate(detailPath)}
+            onCancel={() => unsavedChanges.requestNavigation(detailPath)}
+            onDirty={unsavedChanges.markDirty}
             onSubmit={(event) => {
               event.preventDefault()
-              navigate(detailPath)
+              unsavedChanges.navigateAfterSave(detailPath)
             }}
             school={{ mode: 'select', options: schoolOptions }}
             submitLabel="Save changes"
@@ -117,6 +120,11 @@ const EditProgramPage = () => {
           </aside>
         </div>
       </div>
+      <UnsavedChangesModal
+        isOpen={unsavedChanges.isPromptOpen}
+        onDiscard={unsavedChanges.discardChanges}
+        onKeepEditing={unsavedChanges.keepEditing}
+      />
     </AppShell>
   )
 }

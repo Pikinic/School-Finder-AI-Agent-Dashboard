@@ -1,6 +1,11 @@
 import { Route, Routes } from 'react-router-dom'
+import AccountSettingsPage from '../pages/account/AccountSettingsPage.js'
+import ProfilePage from '../pages/account/ProfilePage.js'
 import AdvisorsPage from '../pages/advisors/AdvisorsPage.js'
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.js'
 import LoginPage from '../pages/auth/LoginPage.js'
+import ResetPasswordPage from '../pages/auth/ResetPasswordPage.js'
+import SetPasswordPage from '../pages/auth/SetPasswordPage.js'
 import ConversationDetailPage from '../pages/conversations/ConversationDetailPage.js'
 import ConversationsPage from '../pages/conversations/ConversationsPage.js'
 import DashboardPage from '../pages/dashboard/DashboardPage.js'
@@ -15,6 +20,7 @@ import EditSchoolPage from '../pages/schools/EditSchoolPage.js'
 import SchoolDetailPage from '../pages/schools/SchoolDetailPage.js'
 import SchoolsPage from '../pages/schools/SchoolsPage.js'
 import SettingsPage from '../pages/settings/SettingsPage.js'
+import NotFoundPage from '../pages/system/NotFoundPage.js'
 import AddStudentPage from '../pages/students/AddStudentPage.js'
 import StudentDetailPage from '../pages/students/StudentDetailPage.js'
 import StudentsPage from '../pages/students/StudentsPage.js'
@@ -28,6 +34,11 @@ const AppRoutes = () => {
   return (
     <Routes>
         <Route path='/login' element={<LoginPage />} />
+        <Route path='/forgot-password' element={<ForgotPasswordPage />} />
+        <Route path='/reset-password/:token' element={<ResetPasswordPage />} />
+        <Route path='/set-password/:token' element={<SetPasswordPage />} />
+        <Route path='/profile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path='/account-settings' element={<ProtectedRoute><AccountSettingsPage /></ProtectedRoute>} />
         <Route path='/' element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
         <Route path='/conversations' element={<ProtectedRoute><ConversationsPage /></ProtectedRoute>} />
         <Route path='/conversations/:conversationId' element={<ProtectedRoute><ConversationDetailPage /></ProtectedRoute>} />
@@ -50,6 +61,7 @@ const AppRoutes = () => {
         <Route path='/team/:memberId' element={<ProtectedRoute><TeamMemberDetailPage /></ProtectedRoute>} />
         <Route path='/advisors' element={<ProtectedRoute><AdvisorsPage /></ProtectedRoute>} />
         <Route path='/settings' element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+        <Route path='*' element={<NotFoundPage />} />
     </Routes>
   )
 }

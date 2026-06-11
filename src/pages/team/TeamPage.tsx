@@ -19,6 +19,9 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
+import AccountAccessConfirmationModal, {
+  type AccountAccessAction,
+} from '../../components/modals/AccountAccessConfirmationModal.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
 import Card from '../../components/ui/Card.js'
@@ -110,19 +113,17 @@ const roleTone: Record<TeamRole, 'brand' | 'neutral' | 'success'> = {
   Operations: 'neutral',
 }
 
-const teamStats = [
-  { icon: UsersRound, label: 'Team members', note: 'Across all internal roles', value: '18' },
-  { icon: CheckCircle2, label: 'Active accounts', note: 'Can currently sign in', value: '14' },
-  { icon: MailPlus, label: 'Pending invites', note: 'Awaiting account setup', value: '3' },
-  { icon: UserRoundX, label: 'Disabled', note: 'Access has been removed', value: '1' },
-] as const
-
 const TeamPage = () => {
   const navigate = useNavigate()
+  const [members, setMembers] = useState(teamMembers)
   const [query, setQuery] = useState('')
   const [role, setRole] = useState('All roles')
   const [status, setStatus] = useState('All statuses')
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [accessAction, setAccessAction] = useState<{
+    action: AccountAccessAction
+    member: TeamMember
+  } | null>(null)
 
   useEffect(() => {
     const closeMenu = (event: MouseEvent) => {
@@ -149,7 +150,7 @@ const TeamPage = () => {
   const filteredMembers = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
 
-    return teamMembers.filter((member) => {
+    return members.filter((member) => {
       const matchesQuery =
         !normalizedQuery ||
         member.fullName.toLowerCase().includes(normalizedQuery) ||
@@ -162,7 +163,51 @@ const TeamPage = () => {
         (status === 'All statuses' || member.status === status)
       )
     })
-  }, [query, role, status])
+  }, [members, query, role, status])
+
+  const openAccessConfirmation = (action: AccountAccessAction, member: TeamMember) => {
+    setOpenMenuId(null)
+    setAccessAction({ action, member })
+  }
+
+  const confirmAccessChange = () => {
+    if (!accessAction) return
+
+    if (accessAction.action === 'cancel-invitation') {
+      setMembers((current) => current.filter((member) => member.id !== accessAction.member.id))
+    } else {
+      const nextStatus: AccountStatus = accessAction.action === 'activate' ? 'Active' : 'Disabled'
+      setMembers((current) =>
+        current.map((member) =>
+          member.id === accessAction.member.id ? { ...member, status: nextStatus } : member,
+        ),
+      )
+    }
+
+    setAccessAction(null)
+  }
+
+  const teamStats = [
+    { icon: UsersRound, label: 'Team members', note: 'Across all internal roles', value: members.length },
+    {
+      icon: CheckCircle2,
+      label: 'Active accounts',
+      note: 'Can currently sign in',
+      value: members.filter((member) => member.status === 'Active').length,
+    },
+    {
+      icon: MailPlus,
+      label: 'Pending invites',
+      note: 'Awaiting account setup',
+      value: members.filter((member) => member.status === 'Invited').length,
+    },
+    {
+      icon: UserRoundX,
+      label: 'Disabled',
+      note: 'Access has been removed',
+      value: members.filter((member) => member.status === 'Disabled').length,
+    },
+  ] as const
 
   return (
     <AppShell>
@@ -333,6 +378,7 @@ const TeamPage = () => {
                                     danger
                                     icon={<PowerOff size={16} />}
                                     label="Cancel invitation"
+                                    onClick={() => openAccessConfirmation('cancel-invitation', member)}
                                   />
                                 </>
                               ) : member.status === 'Active' ? (
@@ -340,9 +386,14 @@ const TeamPage = () => {
                                   danger
                                   icon={<PowerOff size={16} />}
                                   label="Disable account"
+                                  onClick={() => openAccessConfirmation('disable', member)}
                                 />
                               ) : (
-                                <TeamMenuAction icon={<Power size={16} />} label="Activate account" />
+                                <TeamMenuAction
+                                  icon={<Power size={16} />}
+                                  label="Activate account"
+                                  onClick={() => openAccessConfirmation('activate', member)}
+                                />
                               )}
                             </div>
                           ) : null}
@@ -380,7 +431,7 @@ const TeamPage = () => {
           <div className="flex flex-col gap-3 border-t border-[#E5E7EB] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <p className="text-sm text-[#6B7280]">
               Showing <span className="font-semibold text-[#111827]">{filteredMembers.length}</span> of{' '}
-              <span className="font-semibold text-[#111827]">18</span> team members
+              <span className="font-semibold text-[#111827]">{members.length}</span> team members
             </p>
             <div className="flex items-center gap-2">
               <Button disabled leftIcon={<ChevronLeft size={16} />} size="sm" variant="secondary">
@@ -414,6 +465,17 @@ const TeamPage = () => {
           />
         </div>
       </div>
+
+      {accessAction ? (
+        <AccountAccessConfirmationModal
+          action={accessAction.action}
+          email={accessAction.member.email}
+          isOpen
+          memberName={accessAction.member.fullName}
+          onClose={() => setAccessAction(null)}
+          onConfirm={confirmAccessChange}
+        />
+      ) : null}
     </AppShell>
   )
 }

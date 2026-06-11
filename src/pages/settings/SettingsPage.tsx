@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { useMemo, useState, type ReactNode } from 'react'
 import AppShell from '../../components/layout/AppShell.js'
+import DeleteConfirmationModal from '../../components/modals/DeleteConfirmationModal.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
 import Card from '../../components/ui/Card.js'
@@ -27,6 +28,12 @@ type SettingItem = {
 }
 
 type SettingsState = Record<ListSettingKey, SettingItem[]>
+
+type PendingDeletion = {
+  item: SettingItem
+  sectionKey: ListSettingKey
+  sectionLabel: string
+}
 
 const initialSettings: SettingsState = {
   countries: [
@@ -126,6 +133,7 @@ const SettingsPage = () => {
   const [settings, setSettings] = useState<SettingsState>(initialSettings)
   const [newItem, setNewItem] = useState('')
   const [weights, setWeights] = useState(initialWeights)
+  const [pendingDeletion, setPendingDeletion] = useState<PendingDeletion | null>(null)
   const section = settingSections.find((item) => item.key === activeSection) ?? settingSections[0]!
   const weightTotal = useMemo(() => Object.values(weights).reduce((total, weight) => total + weight, 0), [weights])
 
@@ -158,13 +166,16 @@ const SettingsPage = () => {
     }))
   }
 
-  const deleteItem = (id: string) => {
-    if (activeSection === 'recommendationWeights') return
+  const deleteItem = () => {
+    if (!pendingDeletion) return
 
     setSettings((current) => ({
       ...current,
-      [activeSection]: current[activeSection].filter((item) => item.id !== id),
+      [pendingDeletion.sectionKey]: current[pendingDeletion.sectionKey].filter(
+        (item) => item.id !== pendingDeletion.item.id,
+      ),
     }))
+    setPendingDeletion(null)
   }
 
   return (
@@ -201,6 +212,7 @@ const SettingsPage = () => {
                     onClick={() => {
                       setActiveSection(item.key)
                       setNewItem('')
+                      setPendingDeletion(null)
                     }}
                     type="button"
                   >
@@ -307,7 +319,13 @@ const SettingsPage = () => {
                           <button
                             aria-label={`Delete ${item.label}`}
                             className="flex h-9 w-9 items-center justify-center rounded-xl text-[#6B7280] outline-none transition hover:bg-[#FEE2E2] hover:text-[#B42318] focus:ring-4 focus:ring-[#FEE2E2]"
-                            onClick={() => deleteItem(item.id)}
+                            onClick={() =>
+                              setPendingDeletion({
+                                item,
+                                sectionKey: activeSection,
+                                sectionLabel: section.label,
+                              })
+                            }
                             title="Delete value"
                             type="button"
                           >
@@ -330,6 +348,18 @@ const SettingsPage = () => {
           </div>
         </div>
       </div>
+
+      {pendingDeletion ? (
+        <DeleteConfirmationModal
+          consequence={`Confirm that no existing records depend on this value. If it is already in use, the backend must block deletion; disable it instead to preserve historical records.`}
+          description={`Remove this value from ${pendingDeletion.sectionLabel.toLowerCase()}.`}
+          isOpen
+          itemLabel={pendingDeletion.item.label}
+          itemType="setting value"
+          onClose={() => setPendingDeletion(null)}
+          onConfirm={deleteItem}
+        />
+      ) : null}
     </AppShell>
   )
 }

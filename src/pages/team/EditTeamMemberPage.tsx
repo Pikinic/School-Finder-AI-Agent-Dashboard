@@ -10,12 +10,14 @@ import {
   UsersRound,
 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
+import UnsavedChangesModal from '../../components/modals/UnsavedChangesModal.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
 import Card from '../../components/ui/Card.js'
 import Input from '../../components/ui/Input.js'
+import useUnsavedChanges from '../../hooks/useUnsavedChanges.js'
 
 type AccountStatus = 'Active' | 'Disabled' | 'Invited'
 type TeamRole = 'Admin' | 'Advisor' | 'Operations'
@@ -126,11 +128,11 @@ const statusTone: Record<AccountStatus, 'error' | 'success' | 'warning'> = {
 }
 
 const EditTeamMemberPage = () => {
-  const navigate = useNavigate()
   const { memberId } = useParams()
   const member = (memberId && members[memberId]) || fallbackMember
   const displayId = memberId ?? member.id
   const detailPath = `/team/${displayId}`
+  const unsavedChanges = useUnsavedChanges()
   const [selectedRole, setSelectedRole] = useState<TeamRole>(member.role)
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>(member.permissions)
   const availablePermissions =
@@ -154,9 +156,10 @@ const EditTeamMemberPage = () => {
     <AppShell>
       <form
         className="space-y-6"
+        onChange={unsavedChanges.markDirty}
         onSubmit={(event) => {
           event.preventDefault()
-          navigate(detailPath)
+          unsavedChanges.navigateAfterSave(detailPath)
         }}
       >
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
@@ -179,7 +182,7 @@ const EditTeamMemberPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => navigate(detailPath)} size="md" variant="secondary">
+            <Button onClick={() => unsavedChanges.requestNavigation(detailPath)} size="md" variant="secondary">
               Cancel
             </Button>
             <Button leftIcon={<Save size={17} />} size="md" type="submit">
@@ -357,7 +360,7 @@ const EditTeamMemberPage = () => {
 
         <div className="sticky bottom-0 z-10 -mx-4 border-t border-[#E5E7EB] bg-white/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:hidden">
           <div className="flex justify-end gap-3">
-            <Button onClick={() => navigate(detailPath)} size="md" variant="secondary">
+            <Button onClick={() => unsavedChanges.requestNavigation(detailPath)} size="md" variant="secondary">
               Cancel
             </Button>
             <Button leftIcon={<Save size={17} />} size="md" type="submit">
@@ -366,6 +369,11 @@ const EditTeamMemberPage = () => {
           </div>
         </div>
       </form>
+      <UnsavedChangesModal
+        isOpen={unsavedChanges.isPromptOpen}
+        onDiscard={unsavedChanges.discardChanges}
+        onKeepEditing={unsavedChanges.keepEditing}
+      />
     </AppShell>
   )
 }

@@ -17,6 +17,111 @@ Implemented so far:
 - App-level routing is centralized in `src/routes/index.tsx`.
 - `src/App.tsx` renders the route tree through `AppRoutes`.
 - `/login` renders `src/pages/auth/LoginPage.tsx`.
+- `/set-password/:token` is public and renders `src/pages/auth/SetPasswordPage.tsx`.
+- `SetPasswordPage` provides the invitation account-activation workflow:
+  - Development token validation with loading, valid, invalid, expired, and already-used states.
+  - New-password and confirm-password fields with independent visibility controls.
+  - Live checks for minimum length, uppercase, lowercase, and numeric requirements.
+  - Password-match validation and disabled submission while activation is processing.
+  - Success state with navigation to the shared Login page.
+  - Clear guidance that administrators cannot create or view another user's password.
+- Ordinary token values render the valid development flow; `invalid`, `expired`, and `used` can be used to preview failure states.
+- The current Set Password submission is local UI scaffolding until invitation validation and acceptance APIs are connected.
+- `/forgot-password` is public and renders `src/pages/auth/ForgotPasswordPage.tsx`.
+- The Login `Forgot password?` action now navigates to the recovery request page.
+- `ForgotPasswordPage` provides:
+  - Required company-email entry.
+  - Development-only submitting state.
+  - A security-safe generic success response that does not reveal whether the account exists.
+  - Reset-link timing and spam-folder guidance.
+  - Return-to-login and use-a-different-email actions.
+- Forgot-password submission is local UI scaffolding until `POST /api/auth/forgot-password` is connected.
+- `/reset-password/:token` is public and renders `src/pages/auth/ResetPasswordPage.tsx`.
+- `ResetPasswordPage` provides the second step of forgotten-password recovery:
+  - Development token validation with loading, valid, invalid, expired, and already-used states.
+  - New-password and confirmation fields with independent visibility controls.
+  - Live minimum-length, uppercase, lowercase, numeric, and password-match validation.
+  - Processing and success states with navigation to Login.
+  - Invalid-token actions to request a new reset link or return to Login.
+  - Recovery-specific messaging that replaces the existing password without changing role, permissions, or account status.
+- Ordinary token values render the valid development flow; `invalid`, `expired`, and `used` preview reset-link failure states.
+- Reset-password submission remains local UI scaffolding until reset-token validation and password replacement APIs are connected.
+- `/profile` is protected and renders `src/pages/account/ProfilePage.tsx`.
+- The topbar `View profile` menu action now navigates to `/profile` and closes the profile menu.
+- `ProfilePage` provides a read-only current-user view using mock authenticated-user data:
+  - Name, work email, phone number, user ID, role, and account status.
+  - Last login, account creation date, and profile-update timestamp.
+  - Assigned permissions and recent personal account activity.
+  - Clear guidance that role, permissions, and status are administered through Team, while personal preferences and password changes belong in Account settings.
+- Profile now includes a role-gated Advisor summary that renders only when the authenticated user has the Advisor role and an advisor profile:
+  - Availability status.
+  - Active student assignments and capacity.
+  - Workload percentage and balanced, near-capacity, or over-capacity state.
+  - Follow-ups due.
+  - Advisor specializations.
+  - Navigation to Students and the Advisors workload page.
+- The current mock user is an Admin, so advisor workload information remains hidden in the default development view.
+- Profile data remains UI scaffolding until `GET /api/auth/me` is connected to shared authentication state.
+- `/account-settings` is protected and renders `src/pages/account/AccountSettingsPage.tsx`.
+- The topbar `Account settings` menu action now navigates to `/account-settings` and closes the profile menu.
+- `AccountSettingsPage` provides:
+  - Editable current-user name, work email, and phone fields.
+  - Working local notification toggles for assignments, conversations, follow-ups, recommendations, and team activity.
+  - A separate change-password form requiring the current password, a valid new password, and matching confirmation.
+  - Independent password visibility controls and live password-requirement feedback.
+  - Read-only role, status, and user ID context.
+  - Active-session information and a sign-out-other-sessions action scaffold.
+  - Navigation back to the read-only Profile page.
+- Role, permissions, and account status remain excluded from personal Account Settings and continue to be managed through Team.
+- Account Settings changes are local UI scaffolding until `PATCH /api/auth/me`, `POST /api/auth/change-password`, and session-management endpoints are connected.
+- `src/components/ui/Modal.tsx` now provides the reusable modal foundation:
+  - Portal rendering above the application shell.
+  - Accessible dialog title and optional description.
+  - Escape-key and backdrop-click closing.
+  - Body-scroll locking while open.
+  - Standard close icon and restrained internal-dashboard styling.
+  - Medium and large dialog widths for confirmation and operational selection workflows.
+- The topbar Sign out action opens the first implemented confirmation modal.
+- Confirming sign out clears the development token, closes the modal, and redirects to `/login`; Cancel, Escape, backdrop click, and the close icon preserve the session.
+- `src/components/modals/AssignAdvisorModal.tsx` provides the reusable assign/reassign workflow:
+  - Advisor search by name or specialization.
+  - Availability, workload, capacity, specialization, and current-assignment context.
+  - Available, limited, unavailable, current, and capacity states.
+  - Unavailable or full advisors are blocked from receiving new assignments.
+  - Empty search state, Cancel action, and assignment-change validation.
+- Student Detail `Assign advisor` now opens the modal and updates the displayed advisor locally after confirmation.
+- Advisor assignment remains local UI behavior until the student assignment API is connected.
+- `src/components/modals/UpdateWorkflowStatusModal.tsx` provides the reusable workflow-status action:
+  - Receives workflow-specific status options so the same modal can support students and other operational records.
+  - Shows the current status and clearly distinguishes it from the selected replacement.
+  - Requires an actual status change before submission.
+  - Supports an optional internal note for audit and handoff context.
+  - Includes responsive scrolling, Cancel, Escape, backdrop-close, and selection feedback.
+- Student Detail now exposes the status action from the Application status section and updates the visible student status locally after confirmation.
+- Workflow-status changes and notes remain local UI behavior until the status-history API is connected.
+- `src/components/modals/AccountAccessConfirmationModal.tsx` provides one reusable confirmation workflow for:
+  - Activating a disabled account and restoring sign-in access.
+  - Disabling an active account while preserving its role, assignments, and activity history.
+  - Canceling a pending invitation, invalidating its setup link, and removing the pending account.
+  - Action-specific titles, consequences, icons, button labels, and danger treatment.
+- Team directory account actions now open the confirmation modal and update rows, status filters, and summary counts locally after confirmation.
+- Team Member Detail uses the same confirmation modal, updates active or disabled status locally, and returns to Team after canceling a pending invitation.
+- Account-access changes remain local UI behavior until invitation cancellation and `PATCH /api/team/:userId/status` endpoints are connected.
+- `src/components/modals/DeleteConfirmationModal.tsx` provides a reusable destructive-action confirmation for removable records and controlled setting values:
+  - Receives the record type, display label, workflow consequence, and supporting description from the calling surface.
+  - Uses explicit destructive styling, permanent-removal language, and a clear non-destructive cancel action.
+  - Keeps dependency and historical-data warnings visible before confirmation.
+- Settings delete actions now open the confirmation modal instead of removing values immediately.
+- Confirmed setting-value deletion updates the active category locally; Cancel, Escape, backdrop click, and the close icon preserve the value.
+- Setting-value deletion remains local UI behavior until Settings persistence and backend dependency validation are connected.
+- `src/components/modals/UnsavedChangesModal.tsx` and `src/hooks/useUnsavedChanges.ts` provide shared form-exit protection:
+  - Forms become dirty only after a user changes a field.
+  - Internal links and explicit Cancel actions open the same confirmation modal before leaving.
+  - Refreshing or closing the browser tab uses the browser-native unsaved-work warning.
+  - Successful form submission clears the guard and navigates without a warning.
+  - Keep editing preserves every field value; Discard changes continues to the pending destination.
+- Unsaved-change protection is connected to add/edit School, all add/edit Program paths, Add Student, Invite Team Member, and Edit Team Member.
+- Browser history back/forward remains a routing-level concern until the application moves from declarative `BrowserRouter` to a data router with navigation blockers.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -42,8 +147,21 @@ Implemented so far:
   - Mobile sidebar navigation is implemented as an off-canvas drawer with a backdrop, close button, and automatic close on navigation item selection.
   - `src/components/layout/Topbar.tsx` provides the dashboard topbar.
   - The topbar includes global search, an Add student quick action, notification button, staff profile control, and a mobile menu trigger.
+  - The notification button opens a responsive operational notification panel.
+  - The panel includes mock assignment, conversation, follow-up, and invitation notifications with timestamps and contextual navigation.
+  - Notifications support local unread counts, individual read state, Mark all read, Clear notifications, and an empty state.
+- The notification panel and profile menu are mutually exclusive and close on outside click, Escape, or navigation.
+- A wildcard route now renders `src/pages/system/NotFoundPage.tsx` for unknown URLs.
+- `NotFoundPage` adapts to authentication state:
+  - Authenticated staff retain `AppShell`, see the requested path, and receive recovery links to Dashboard, Students, Schools, Programs, and Conversations.
+  - Signed-out visitors receive a restrained standalone Staff Portal view with Login navigation and no protected workspace links.
+  - Both variants provide a working browser-history Back action.
   - The staff profile control is a profile/account menu, not a role selector.
   - The current profile menu uses mock authenticated-user data (`Amina Yusuf`, `Admin`) and includes View profile, Account settings, and Sign out menu actions.
+  - Sign out opens a focused confirmation modal before ending the current session.
+  - View profile should navigate to the protected `/profile` page for the currently authenticated user's read-only identity, role, permissions, and account summary.
+  - Account settings should navigate to the protected `/account-settings` page for the current user's own contact details, notification preferences, and password/security actions.
+  - Topbar Account settings is personal to the signed-in user and is separate from the sidebar Settings page, which controls organization-wide operational values.
   - On mobile, the profile menu remains visible as a compact initials button; on desktop it shows the full user name, role, initials, and chevron.
   - User name, role, initials, and sign-out behavior should later come from the real authentication state/API.
   - The topbar uses a white background, bottom border, compact height, and restrained dashboard styling.
@@ -362,6 +480,10 @@ Known next steps:
 
 - Replace the development-only login behavior with a real auth API call.
 - Add authenticated user state and logout handling.
+- Connect `SetPasswordPage` to `GET /api/auth/invitations/:token` and `POST /api/auth/invitations/:token/accept`.
+- Replace Profile mock data with authenticated user state from `GET /api/auth/me`.
+- Connect Account Settings personal details to `PATCH /api/auth/me`.
+- Connect password changes to `POST /api/auth/change-password` and define authenticated session-management endpoints.
 - Replace dashboard mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Replace Students / Leads mock data with TanStack Query-backed API data when backend endpoints are ready.
 - Connect Add Student to `POST /api/students` and persist acquisition source metadata.
@@ -403,6 +525,118 @@ Known next steps:
 - Continue expanding the reusable UI layer with table, select, textarea, page header, loading, and empty states.
 - Fix ESLint TypeScript support by adding the TypeScript ESLint parser/plugin or the current `typescript-eslint` flat config package.
 - Add loading and error states around authentication once the backend is connected.
+
+## Remaining UI Completion Checklist
+
+The primary page inventory is complete. Remaining frontend UI work should be completed in the following order.
+
+### 1. Missing Screens and Surfaces
+
+- Completed: forgot-password request page and Login navigation.
+- Completed: reset-password token page as a separate workflow from invitation password setup.
+- Completed: responsive notifications panel for the topbar notification button.
+- Completed: adaptive Not Found page and wildcard route.
+- Completed: advisor-specific Profile summary with role-conditional rendering.
+
+### 2. Remaining Modals
+
+The reusable `Modal` foundation, Sign out confirmation, advisor assignment modal, workflow-status modal, account-access confirmation modal, delete confirmation modal, and unsaved-changes confirmation modal are implemented. Still required:
+
+- Completed: Assign or reassign advisor modal.
+- Completed: Update workflow status modal.
+- Completed: Account access confirmation modal for activate, disable, or cancel invitation.
+- Completed: Delete confirmation modal for removable records and setting values.
+- Completed: Unsaved changes confirmation modal for forms.
+- Optional quick follow-up or internal-note modal when in-context entry is preferred.
+
+### 3. Visible Actions That Still Need UI Behavior
+
+Student workflows:
+
+- Completed locally: Assign or reassign advisor.
+- Completed locally: Update student workflow status.
+- Refresh recommendations.
+- Add internal notes.
+- Mark or schedule follow-up.
+- Open the related conversation from Student Detail.
+
+Conversation workflows:
+
+- Send advisor reply.
+- Assign or reassign advisor.
+- Escalate conversation.
+- Mark conversation resolved.
+- Functional sorting and pagination.
+
+School and program workflows:
+
+- Update school status.
+- Update program status.
+- Export school directory.
+- Functional sorting and pagination.
+
+Team workflows:
+
+- Resend invitation.
+- Completed locally: Cancel invitation.
+- Completed locally: Activate or disable account.
+- Functional pagination.
+
+Advisor workflows:
+
+- Open Students with an advisor-specific assignment filter.
+- Review advisor follow-ups in the correct filtered workflow.
+- Functional pagination.
+
+Settings and personal account workflows:
+
+- Save operational Settings changes.
+- Save personal profile changes.
+- Save notification preferences.
+- Show password-change success and failure feedback.
+- Sign out other sessions.
+
+Dashboard and global workflows:
+
+- Export report.
+- Review leads with the intended filtered Students view.
+- Implement global search behavior.
+- Replace mock notifications with authenticated notification API data and persistence.
+
+### 4. Shared UI Components Still Needed
+
+The current pages contain several locally implemented patterns. Extract reusable components where they remove meaningful duplication:
+
+- `Select`.
+- `Textarea`.
+- `Table`.
+- `Tabs`.
+- `EmptyState`.
+- `LoadingState`.
+- Error state or error notice.
+- Confirmation modal content pattern.
+
+Do not refactor existing pages only for abstraction. Extract a shared component when implementing or revisiting a workflow that already repeats the pattern.
+
+### 5. Cross-Cutting UI States
+
+- Add loading states for page data, form submission, and destructive actions.
+- Add useful API error states and retry actions.
+- Add success feedback for saves and workflow actions.
+- Add disabled and processing states that prevent duplicate submissions.
+- Add empty states to any remaining filtered lists or activity sections.
+- Add unsaved-change protection to create and edit forms.
+
+### 6. Final UI Quality Pass
+
+- Test all routes at desktop, tablet, and mobile widths.
+- Verify horizontal tables remain usable and action labels do not wrap incorrectly.
+- Verify dialogs support keyboard navigation, initial focus, focus trapping, focus return, Escape, and accessible labels.
+- Verify profile menus and row menus close on outside click, Escape, and navigation.
+- Verify all icon-only controls have accessible labels and useful tooltips.
+- Verify text does not overflow buttons, cards, tables, or narrow mobile layouts.
+- Completed: wildcard route prevents invalid URLs from rendering a blank page.
+- Introduce route-level code splitting to reduce the production bundle-size warning.
 
 ## Frontend Purpose
 
@@ -583,6 +817,71 @@ Actions:
 - Login.
 - Store auth token securely.
 - Redirect to dashboard.
+
+### Set Password Page
+
+Purpose:
+
+- Complete an invited internal user's account setup.
+
+Route:
+
+- Public `/set-password/:token`.
+
+Fields:
+
+- New password.
+- Confirm password.
+
+Behavior:
+
+- Validate the invitation token with the backend before allowing submission.
+- Show clear invalid, expired, already-used, loading, and success states.
+- Enforce the backend password policy and require both password fields to match.
+- Accept the invitation, store the password securely on the backend, and activate the account.
+- Redirect the user to the shared Login page after successful setup.
+- Never expose an administrator-created password because administrators do not create team-member passwords.
+
+This page is only for first-time invitation acceptance. Forgotten-password recovery must use a separate reset-password token flow.
+
+### Profile Page
+
+Purpose:
+
+- Show the currently authenticated user's own account and role information.
+
+Route:
+
+- Protected `/profile`.
+
+Sections:
+
+- Name, work email, phone, and user ID.
+- Role and permissions.
+- Account status.
+- Last login and account timestamps.
+- Advisor profile summary when the current user is an advisor.
+
+The Profile page is read-only. It is different from Team Member Detail because it always represents the signed-in user and must not expose administrative account controls.
+
+### Account Settings Page
+
+Purpose:
+
+- Manage preferences and security for the currently authenticated user.
+
+Route:
+
+- Protected `/account-settings`.
+
+Sections:
+
+- Editable personal contact details where permitted.
+- Notification preferences.
+- Change-password workflow requiring the current password.
+- Active-session or security information when supported by the backend.
+
+Role, permissions, and account status are not editable here. Administrators manage those fields through Team.
 
 ### Dashboard Page
 
@@ -804,6 +1103,15 @@ Account flow:
 
 Administrators must not create, store, or view another team member's password.
 
+Invitation acceptance flow:
+
+1. The invitation email contains a single-use, time-limited setup token.
+2. The link opens `/set-password/:token`.
+3. The frontend validates the token with the backend.
+4. The invited user enters and confirms their own password.
+5. The backend accepts the invitation, hashes the password, and changes the account from `invited` to `active`.
+6. The user is redirected to Login and signs in through the shared authentication flow.
+
 ### Settings Page
 
 Purpose:
@@ -818,6 +1126,23 @@ Settings:
 - Lead statuses.
 - Application statuses.
 - Recommendation scoring weights.
+
+### Modal Policy
+
+Use modals only for short, focused actions that do not justify a dedicated page.
+
+Core reusable modals:
+
+1. Confirm sign out.
+2. Assign or reassign advisor.
+3. Update workflow status.
+4. Confirm account access changes such as disable, activate, or cancel invitation.
+5. Confirm deletion of a removable record or setting value.
+6. Warn about unsaved form changes before navigation.
+
+An optional quick follow-up or internal-note modal may be added when the workflow needs in-context entry.
+
+Do not use modals for Login, invitation password setup, Profile, Account settings, school/program/student forms, Team Member Detail, or Team account editing. These workflows require dedicated pages.
 
 ## Suggested Folder Structure
 
@@ -843,6 +1168,12 @@ school-finder-frontend/
         AppShell.tsx
         Sidebar.tsx
         Topbar.tsx
+      modals/
+        AccountAccessConfirmationModal.tsx
+        AssignAdvisorModal.tsx
+        DeleteConfirmationModal.tsx
+        UnsavedChangesModal.tsx
+        UpdateWorkflowStatusModal.tsx
       ui/
         Button.tsx
         Input.tsx
@@ -858,9 +1189,16 @@ school-finder-frontend/
         ProgramForm.tsx
         StudentNoteForm.tsx
 
+    hooks/
+      useUnsavedChanges.ts
+
     pages/
       auth/
         LoginPage.tsx
+        SetPasswordPage.tsx
+      account/
+        ProfilePage.tsx
+        AccountSettingsPage.tsx
       dashboard/
         DashboardPage.tsx
       students/
@@ -892,6 +1230,8 @@ school-finder-frontend/
         AdvisorsPage.tsx
       settings/
         SettingsPage.tsx
+      system/
+        NotFoundPage.tsx
 
     routes/
       index.tsx
@@ -953,6 +1293,13 @@ Example API routes the frontend may consume:
 ```text
 POST   /api/auth/login
 GET    /api/auth/me
+POST   /api/auth/forgot-password
+GET    /api/auth/reset-password/:token
+POST   /api/auth/reset-password/:token
+GET    /api/auth/invitations/:token
+POST   /api/auth/invitations/:token/accept
+PATCH  /api/auth/me
+POST   /api/auth/change-password
 
 GET    /api/students
 GET    /api/students/:id
@@ -1099,16 +1446,32 @@ type Recommendation = {
 
 ## Authentication Flow
 
+Invitation setup:
+
+1. Invited user opens the single-use link at `/set-password/:token`.
+2. Frontend validates the invitation token.
+3. User creates and confirms their own password.
+4. Backend hashes the password, marks the token used, and activates the account.
+5. Frontend redirects to Login.
+
+Normal sign-in:
+
 1. User logs in with email and password.
 2. Backend returns access token and user profile.
-3. Frontend stores token.
-4. API client attaches token to protected requests.
-5. Protected routes redirect unauthenticated users to login.
+3. Frontend stores token using the backend's chosen secure authentication strategy.
+4. API client attaches authentication to protected requests.
+5. Protected routes redirect unauthenticated users to Login.
 6. Logout clears token and user state.
 
 ## UI Flow
 
 ```text
+Invitation email
+  |
+  v
+Set Password
+  |
+  v
 Login
   |
   v
@@ -1141,6 +1504,12 @@ Dashboard
   +--> Advisors
   |
   +--> Settings
+  |
+  +--> Topbar Profile Menu
+          |
+          +--> Profile
+          +--> Account Settings
+          +--> Sign Out
 ```
 
 ## MVP Frontend Scope
@@ -1148,6 +1517,8 @@ Dashboard
 The first frontend version should include:
 
 - Login page.
+- Invitation password setup page.
+- Current-user Profile and Account Settings pages.
 - Protected dashboard layout.
 - Students list.
 - Student detail page.

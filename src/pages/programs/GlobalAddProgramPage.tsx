@@ -1,9 +1,11 @@
 import { ArrowLeft, BookOpen, Building2, Search } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import ProgramForm from '../../components/forms/ProgramForm.js'
 import AppShell from '../../components/layout/AppShell.js'
+import UnsavedChangesModal from '../../components/modals/UnsavedChangesModal.js'
 import Badge from '../../components/ui/Badge.js'
 import Card from '../../components/ui/Card.js'
+import useUnsavedChanges from '../../hooks/useUnsavedChanges.js'
 
 const schoolOptions = [
   { id: 'SCH-2048', name: 'Northbridge College' },
@@ -14,7 +16,7 @@ const schoolOptions = [
 ]
 
 const GlobalAddProgramPage = () => {
-  const navigate = useNavigate()
+  const unsavedChanges = useUnsavedChanges()
 
   return (
     <AppShell>
@@ -38,10 +40,11 @@ const GlobalAddProgramPage = () => {
 
         <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
           <ProgramForm
-            onCancel={() => navigate('/programs')}
+            onCancel={() => unsavedChanges.requestNavigation('/programs')}
+            onDirty={unsavedChanges.markDirty}
             onSubmit={(event) => {
               event.preventDefault()
-              navigate('/programs')
+              unsavedChanges.navigateAfterSave('/programs')
             }}
             school={{ mode: 'select', options: schoolOptions }}
           />
@@ -80,6 +83,11 @@ const GlobalAddProgramPage = () => {
           </aside>
         </div>
       </div>
+      <UnsavedChangesModal
+        isOpen={unsavedChanges.isPromptOpen}
+        onDiscard={unsavedChanges.discardChanges}
+        onKeepEditing={unsavedChanges.keepEditing}
+      />
     </AppShell>
   )
 }

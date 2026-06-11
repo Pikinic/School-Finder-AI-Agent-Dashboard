@@ -7,6 +7,7 @@ import Input from '../ui/Input.js'
 type ProgramFormProps = {
   initialValues?: ProgramFormValues
   onCancel: () => void
+  onDirty: () => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
   school:
     | {
@@ -46,12 +47,13 @@ const intakePeriods = ['Winter', 'Spring', 'Summer', 'Fall']
 const ProgramForm = ({
   initialValues = {},
   onCancel,
+  onDirty,
   onSubmit,
   school,
   submitLabel = 'Add program',
 }: ProgramFormProps) => {
   return (
-    <form className="space-y-6" onSubmit={onSubmit}>
+    <form className="space-y-6" onChange={onDirty} onSubmit={onSubmit}>
       <FormSection
         description="Core classification used in program search and student matching."
         icon={<BookOpen size={19} />}

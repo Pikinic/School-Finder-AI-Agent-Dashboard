@@ -10,25 +10,28 @@ import {
   UserRoundCheck,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
+import UnsavedChangesModal from '../../components/modals/UnsavedChangesModal.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
 import Card from '../../components/ui/Card.js'
 import Input from '../../components/ui/Input.js'
+import useUnsavedChanges from '../../hooks/useUnsavedChanges.js'
 
 const destinationCountries = ['Canada', 'United Kingdom', 'United States', 'Australia', 'Germany']
 
 const AddStudentPage = () => {
-  const navigate = useNavigate()
+  const unsavedChanges = useUnsavedChanges()
 
   return (
     <AppShell>
       <form
         className="space-y-6"
+        onChange={unsavedChanges.markDirty}
         onSubmit={(event) => {
           event.preventDefault()
-          navigate('/students')
+          unsavedChanges.navigateAfterSave('/students')
         }}
       >
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
@@ -50,7 +53,7 @@ const AddStudentPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => navigate('/students')} size="md" variant="secondary">
+            <Button onClick={() => unsavedChanges.requestNavigation('/students')} size="md" variant="secondary">
               Cancel
             </Button>
             <Button leftIcon={<Plus size={17} />} size="md" type="submit">
@@ -286,7 +289,7 @@ const AddStudentPage = () => {
 
         <div className="sticky bottom-0 z-10 -mx-4 border-t border-[#E5E7EB] bg-white/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:hidden">
           <div className="flex justify-end gap-3">
-            <Button onClick={() => navigate('/students')} size="md" variant="secondary">
+            <Button onClick={() => unsavedChanges.requestNavigation('/students')} size="md" variant="secondary">
               Cancel
             </Button>
             <Button leftIcon={<Plus size={17} />} size="md" type="submit">
@@ -295,6 +298,11 @@ const AddStudentPage = () => {
           </div>
         </div>
       </form>
+      <UnsavedChangesModal
+        isOpen={unsavedChanges.isPromptOpen}
+        onDiscard={unsavedChanges.discardChanges}
+        onKeepEditing={unsavedChanges.keepEditing}
+      />
     </AppShell>
   )
 }
