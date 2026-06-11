@@ -114,6 +114,14 @@ Implemented so far:
 - Settings delete actions now open the confirmation modal instead of removing values immediately.
 - Confirmed setting-value deletion updates the active category locally; Cancel, Escape, backdrop click, and the close icon preserve the value.
 - Setting-value deletion remains local UI behavior until Settings persistence and backend dependency validation are connected.
+- `src/components/modals/UnsavedChangesModal.tsx` and `src/hooks/useUnsavedChanges.ts` provide shared form-exit protection:
+  - Forms become dirty only after a user changes a field.
+  - Internal links and explicit Cancel actions open the same confirmation modal before leaving.
+  - Refreshing or closing the browser tab uses the browser-native unsaved-work warning.
+  - Successful form submission clears the guard and navigates without a warning.
+  - Keep editing preserves every field value; Discard changes continues to the pending destination.
+- Unsaved-change protection is connected to add/edit School, all add/edit Program paths, Add Student, Invite Team Member, and Edit Team Member.
+- Browser history back/forward remains a routing-level concern until the application moves from declarative `BrowserRouter` to a data router with navigation blockers.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -532,13 +540,13 @@ The primary page inventory is complete. Remaining frontend UI work should be com
 
 ### 2. Remaining Modals
 
-The reusable `Modal` foundation, Sign out confirmation, advisor assignment modal, workflow-status modal, account-access confirmation modal, and delete confirmation modal are implemented. Still required:
+The reusable `Modal` foundation, Sign out confirmation, advisor assignment modal, workflow-status modal, account-access confirmation modal, delete confirmation modal, and unsaved-changes confirmation modal are implemented. Still required:
 
 - Completed: Assign or reassign advisor modal.
 - Completed: Update workflow status modal.
 - Completed: Account access confirmation modal for activate, disable, or cancel invitation.
 - Completed: Delete confirmation modal for removable records and setting values.
-- Unsaved changes confirmation modal for forms.
+- Completed: Unsaved changes confirmation modal for forms.
 - Optional quick follow-up or internal-note modal when in-context entry is preferred.
 
 ### 3. Visible Actions That Still Need UI Behavior
@@ -1164,6 +1172,7 @@ school-finder-frontend/
         AccountAccessConfirmationModal.tsx
         AssignAdvisorModal.tsx
         DeleteConfirmationModal.tsx
+        UnsavedChangesModal.tsx
         UpdateWorkflowStatusModal.tsx
       ui/
         Button.tsx
@@ -1179,6 +1188,9 @@ school-finder-frontend/
         SchoolForm.tsx
         ProgramForm.tsx
         StudentNoteForm.tsx
+
+    hooks/
+      useUnsavedChanges.ts
 
     pages/
       auth/

@@ -7,12 +7,14 @@ import {
   ShieldCheck,
   Star,
 } from 'lucide-react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import AppShell from '../../components/layout/AppShell.js'
+import UnsavedChangesModal from '../../components/modals/UnsavedChangesModal.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
 import Card from '../../components/ui/Card.js'
 import Input from '../../components/ui/Input.js'
+import useUnsavedChanges from '../../hooks/useUnsavedChanges.js'
 
 const school = {
   address: '120 Harbour Street',
@@ -39,24 +41,26 @@ const school = {
 }
 
 const EditSchoolPage = () => {
-  const navigate = useNavigate()
   const { schoolId } = useParams()
   const displayId = schoolId ?? school.id
+  const detailPath = `/schools/${displayId}`
+  const unsavedChanges = useUnsavedChanges()
 
   return (
     <AppShell>
       <form
         className="space-y-6"
+        onChange={unsavedChanges.markDirty}
         onSubmit={(event) => {
           event.preventDefault()
-          navigate(`/schools/${displayId}`)
+          unsavedChanges.navigateAfterSave(detailPath)
         }}
       >
         <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
             <Link
               className="inline-flex items-center gap-2 text-sm font-semibold text-[#045A58] transition hover:text-[#034A48]"
-              to={`/schools/${displayId}`}
+              to={detailPath}
             >
               <ArrowLeft size={16} />
               {school.name}
@@ -71,7 +75,7 @@ const EditSchoolPage = () => {
           </div>
 
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => navigate(`/schools/${displayId}`)} size="md" variant="secondary">
+            <Button onClick={() => unsavedChanges.requestNavigation(detailPath)} size="md" variant="secondary">
               Cancel
             </Button>
             <Button leftIcon={<Save size={17} />} size="md" type="submit">
@@ -241,7 +245,7 @@ const EditSchoolPage = () => {
               </p>
               <Link
                 className="mt-5 inline-flex h-10 w-full items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] outline-none transition hover:bg-[#F9FAFB] focus:ring-4 focus:ring-[#E6F4F3]"
-                to={`/schools/${displayId}`}
+                to={detailPath}
               >
                 View related programs
               </Link>
@@ -251,7 +255,7 @@ const EditSchoolPage = () => {
 
         <div className="sticky bottom-0 z-10 -mx-4 border-t border-[#E5E7EB] bg-white/95 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 xl:hidden">
           <div className="flex justify-end gap-3">
-            <Button onClick={() => navigate(`/schools/${displayId}`)} size="md" variant="secondary">
+            <Button onClick={() => unsavedChanges.requestNavigation(detailPath)} size="md" variant="secondary">
               Cancel
             </Button>
             <Button leftIcon={<Save size={17} />} size="md" type="submit">
@@ -260,6 +264,11 @@ const EditSchoolPage = () => {
           </div>
         </div>
       </form>
+      <UnsavedChangesModal
+        isOpen={unsavedChanges.isPromptOpen}
+        onDiscard={unsavedChanges.discardChanges}
+        onKeepEditing={unsavedChanges.keepEditing}
+      />
     </AppShell>
   )
 }
