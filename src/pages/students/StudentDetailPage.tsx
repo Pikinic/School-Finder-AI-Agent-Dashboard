@@ -1,6 +1,7 @@
 import {
   ArrowLeft,
   BookOpen,
+  CalendarPlus,
   CalendarClock,
   CheckCircle2,
   ClipboardList,
@@ -11,7 +12,6 @@ import {
   Phone,
   RefreshCw,
   School,
-  Send,
   SlidersHorizontal,
   Sparkles,
   UserRoundCheck,
@@ -19,6 +19,10 @@ import {
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import AssignAdvisorModal from '../../components/modals/AssignAdvisorModal.js'
+import QuickStudentEntryModal, {
+  type QuickEntryMode,
+  type QuickEntryResult,
+} from '../../components/modals/QuickStudentEntryModal.js'
 import UpdateWorkflowStatusModal, {
   type WorkflowStatusOption,
 } from '../../components/modals/UpdateWorkflowStatusModal.js'
@@ -26,7 +30,6 @@ import AppShell from '../../components/layout/AppShell.js'
 import Badge from '../../components/ui/Badge.js'
 import Button from '../../components/ui/Button.js'
 import Card from '../../components/ui/Card.js'
-import Input from '../../components/ui/Input.js'
 
 type BadgeTone = 'brand' | 'neutral' | 'success' | 'warning' | 'error'
 
@@ -50,7 +53,9 @@ type StudentDetail = {
   notes: Array<{
     author: string
     body: string
+    category?: string
     date: string
+    title?: string
   }>
   phone: string
   preferredProgram: string
@@ -198,12 +203,43 @@ const StudentDetailPage = () => {
   const [isAdvisorModalOpen, setIsAdvisorModalOpen] = useState(false)
   const [studentStatus, setStudentStatus] = useState(studentDetail.status)
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false)
+  const [notes, setNotes] = useState(studentDetail.notes)
+  const [followUps, setFollowUps] = useState<
+    Array<Extract<QuickEntryResult, { mode: 'follow-up' }>>
+  >([])
+  const [quickEntryMode, setQuickEntryMode] = useState<QuickEntryMode>('note')
+  const [isQuickEntryModalOpen, setIsQuickEntryModalOpen] = useState(false)
   const profileItems = [
     { label: 'Email', value: studentDetail.email, icon: Mail },
     { label: 'Phone', value: studentDetail.phone, icon: Phone },
     { label: 'Student ID', value: displayId, icon: ClipboardList },
     { label: 'Advisor', value: assignedAdvisor, icon: UserRoundCheck },
   ] as const
+
+  const openQuickEntry = (mode: QuickEntryMode) => {
+    setQuickEntryMode(mode)
+    setIsQuickEntryModalOpen(true)
+  }
+
+  const saveQuickEntry = (entry: QuickEntryResult) => {
+    if (entry.mode === 'note') {
+      setNotes((current) => [
+        {
+          author: 'Amina Yusuf',
+          body: entry.body,
+          category: entry.category,
+          date: 'Just now',
+          title: entry.title,
+        },
+        ...current,
+      ])
+    } else {
+      setFollowUps((current) => [entry, ...current])
+      setStudentStatus('Follow-up')
+    }
+
+    setIsQuickEntryModalOpen(false)
+  }
 
   return (
     <AppShell>
@@ -469,17 +505,44 @@ const StudentDetailPage = () => {
               <h2 className="text-lg font-semibold text-[#111827]">Advisor notes</h2>
               <p className="mt-1 text-sm text-[#6B7280]">Internal notes for follow-up and application handling.</p>
             </div>
-            <Button leftIcon={<Send size={17} />} size="md">
-              Add note
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                leftIcon={<CalendarPlus size={17} />}
+                onClick={() => openQuickEntry('follow-up')}
+                size="md"
+                variant="secondary"
+              >
+                Schedule follow-up
+              </Button>
+              <Button
+                leftIcon={<MessageSquareText size={17} />}
+                onClick={() => openQuickEntry('note')}
+                size="md"
+              >
+                Add note
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-6 xl:grid-cols-[1fr_0.72fr]">
             <div className="space-y-3">
-              {studentDetail.notes.map((note) => (
-                <div className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4" key={`${note.author}-${note.date}`}>
+              {notes.map((note, index) => (
+                <div
+                  className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4"
+                  key={`${note.author}-${note.date}-${index}`}
+                >
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm font-semibold text-[#111827]">{note.author}</p>
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {note.title ? (
+                          <p className="text-sm font-semibold text-[#111827]">{note.title}</p>
+                        ) : null}
+                        {note.category ? <Badge tone="neutral">{note.category}</Badge> : null}
+                      </div>
+                      <p className={note.title ? 'mt-1 text-xs font-medium text-[#6B7280]' : 'text-sm font-semibold text-[#111827]'}>
+                        {note.author}
+                      </p>
+                    </div>
                     <p className="text-xs font-medium text-[#6B7280]">{note.date}</p>
                   </div>
                   <p className="mt-2 text-sm leading-6 text-[#374151]">{note.body}</p>
@@ -488,15 +551,52 @@ const StudentDetailPage = () => {
             </div>
 
             <div className="rounded-2xl border border-[#E5E7EB] p-4">
-              <Input id="note-title" label="Note title" placeholder="Follow-up topic" type="text" />
-              <label className="mt-4 block text-sm font-medium text-[#111827]" htmlFor="note-body">
-                Note
-              </label>
-              <textarea
-                className="mt-2 min-h-32 w-full resize-none rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] outline-none transition placeholder:text-[#9CA3AF] focus:border-[#045A58] focus:ring-4 focus:ring-[#E6F4F3]"
-                id="note-body"
-                placeholder="Add advisor context..."
-              />
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-sm font-semibold text-[#111827]">Scheduled follow-ups</h3>
+                  <p className="mt-1 text-xs leading-5 text-[#6B7280]">
+                    Upcoming advisor actions for this student.
+                  </p>
+                </div>
+                <Badge tone={followUps.length ? 'warning' : 'neutral'}>{followUps.length}</Badge>
+              </div>
+
+              {followUps.length ? (
+                <div className="mt-4 space-y-3">
+                  {followUps.map((followUp, index) => (
+                    <div
+                      className="rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] p-3"
+                      key={`${followUp.subject}-${followUp.date}-${index}`}
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <p className="text-sm font-semibold text-[#111827]">{followUp.subject}</p>
+                        <Badge tone={followUp.priority === 'Urgent' ? 'error' : followUp.priority === 'High' ? 'warning' : 'neutral'}>
+                          {followUp.priority}
+                        </Badge>
+                      </div>
+                      <p className="mt-2 text-xs font-medium text-[#045A58]">
+                        {formatFollowUpDate(followUp.date, followUp.time)}
+                      </p>
+                      <p className="mt-1 text-xs text-[#6B7280]">{followUp.channel}</p>
+                      {followUp.note ? (
+                        <p className="mt-2 text-sm leading-5 text-[#4B5563]">{followUp.note}</p>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-4 rounded-xl border border-dashed border-[#D1D5DB] bg-[#F9FAFB] px-4 py-6 text-center">
+                  <CalendarPlus className="mx-auto text-[#9CA3AF]" size={20} />
+                  <p className="mt-2 text-sm font-medium text-[#374151]">No follow-up scheduled</p>
+                  <button
+                    className="mt-2 text-sm font-semibold text-[#045A58] outline-none hover:text-[#034A48] focus:underline"
+                    onClick={() => openQuickEntry('follow-up')}
+                    type="button"
+                  >
+                    Schedule the next action
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </Card>
@@ -524,8 +624,32 @@ const StudentDetailPage = () => {
         options={studentStatusOptions}
         workflowLabel="Student workflow"
       />
+      <QuickStudentEntryModal
+        isOpen={isQuickEntryModalOpen}
+        mode={quickEntryMode}
+        onClose={() => setIsQuickEntryModalOpen(false)}
+        onSave={saveQuickEntry}
+        studentName={studentDetail.fullName}
+      />
     </AppShell>
   )
+}
+
+const formatFollowUpDate = (date: string, time: string) => {
+  const formattedDate = new Intl.DateTimeFormat('en', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(`${date}T00:00:00`))
+
+  if (!time) return formattedDate
+
+  const formattedTime = new Intl.DateTimeFormat('en', {
+    hour: 'numeric',
+    minute: '2-digit',
+  }).format(new Date(`${date}T${time}:00`))
+
+  return `${formattedDate}, ${formattedTime}`
 }
 
 export default StudentDetailPage
