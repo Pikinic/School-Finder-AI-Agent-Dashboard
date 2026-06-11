@@ -122,6 +122,13 @@ Implemented so far:
   - Keep editing preserves every field value; Discard changes continues to the pending destination.
 - Unsaved-change protection is connected to add/edit School, all add/edit Program paths, Add Student, Invite Team Member, and Edit Team Member.
 - Browser history back/forward remains a routing-level concern until the application moves from declarative `BrowserRouter` to a data router with navigation blockers.
+- `src/components/modals/QuickStudentEntryModal.tsx` provides one reusable in-context advisor action for Student Detail:
+  - Internal-note mode requires a title and note body, supports an operational category, and clearly marks the entry as internal only.
+  - Follow-up mode requires a subject and due date, with optional time, contact channel, priority, and advisor context.
+  - Mode-specific copy, fields, validation, icons, and submit actions keep each workflow focused.
+- Student Detail now opens the modal from `Add note`, `Schedule follow-up`, and the empty follow-up state.
+- Confirmed notes are added to the local Advisor notes history; confirmed follow-ups appear in a compact scheduled-action queue and set the local student workflow status to `Follow-up`.
+- Quick notes and follow-ups remain local UI behavior until student notes and follow-up APIs are connected.
 - `/` is protected and renders `src/pages/dashboard/DashboardPage.tsx` only through `src/routes/ProtectedRoute.tsx`.
 - `ProtectedRoute` checks `localStorage.getItem('token')`.
 - If no token exists, protected routes redirect to `/login` using React Router's `Navigate`.
@@ -540,14 +547,14 @@ The primary page inventory is complete. Remaining frontend UI work should be com
 
 ### 2. Remaining Modals
 
-The reusable `Modal` foundation, Sign out confirmation, advisor assignment modal, workflow-status modal, account-access confirmation modal, delete confirmation modal, and unsaved-changes confirmation modal are implemented. Still required:
+The reusable modal inventory is complete: Sign out confirmation, advisor assignment, workflow status, account access, delete confirmation, unsaved changes, and the optional quick student entry are implemented.
 
 - Completed: Assign or reassign advisor modal.
 - Completed: Update workflow status modal.
 - Completed: Account access confirmation modal for activate, disable, or cancel invitation.
 - Completed: Delete confirmation modal for removable records and setting values.
 - Completed: Unsaved changes confirmation modal for forms.
-- Optional quick follow-up or internal-note modal when in-context entry is preferred.
+- Completed: Optional quick follow-up or internal-note modal when in-context entry is preferred.
 
 ### 3. Visible Actions That Still Need UI Behavior
 
@@ -556,8 +563,8 @@ Student workflows:
 - Completed locally: Assign or reassign advisor.
 - Completed locally: Update student workflow status.
 - Refresh recommendations.
-- Add internal notes.
-- Mark or schedule follow-up.
+- Completed locally: Add internal notes.
+- Completed locally: Mark or schedule follow-up.
 - Open the related conversation from Student Detail.
 
 Conversation workflows:
@@ -1172,6 +1179,7 @@ school-finder-frontend/
         AccountAccessConfirmationModal.tsx
         AssignAdvisorModal.tsx
         DeleteConfirmationModal.tsx
+        QuickStudentEntryModal.tsx
         UnsavedChangesModal.tsx
         UpdateWorkflowStatusModal.tsx
       ui/
